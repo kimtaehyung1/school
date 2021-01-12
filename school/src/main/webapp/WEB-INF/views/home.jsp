@@ -1,23 +1,119 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ko">
 <head>
-<link rel="stylesheet" href="resources/css/common.css">
-<link rel="stylesheet" href="resources/css/base.css">
-
+<link href="resources/css/base.css" rel="stylesheet" type="text/css" />
+<link href="resources/css/common.css" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<title>서울학교급식포털</title>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
-	initPage = function() {
 
-	};
+	var flag1=true;
+	var flag2=true;
+
+	$(document).ready(function(){
+		$(".mainMenu").each(function(index, item){
+			$(item).click(function(){
+				flag1=false;
+			});
+		});
+		
+		$(".subMenu").each(function(index, item){
+			$(item).click(function(){
+				flag1=true;
+				flag2=false;
+			});
+		});
+	});
+	
+	function getElementsByClass(searchClass, node, tag) {
+	 var classElements = new Array();
+	 if ( node == null ) node = document;
+	 if ( tag == null ) tag = '*';
+	 var els = node.getElementsByTagName(tag);
+	 var elsLen = els.length;
+	 var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
+	 for (i = 0, j = 0; i < elsLen; i++) {
+	  if ( pattern.test(els[i].className) ) {
+	    classElements[j] = els[i];
+	    j++;
+	  }
+	}
+	return classElements;
+	}
+	
+	function menuHidden(menu, sub) {
+	menu.src = menu.src.replace("On", "Off");
+	sub.style.display = "none";
+	}
+	
+	function setEvtGnb() {
+	var mainMenu = getElementsByClass("mainMenu");
+	var prevMenu1, prevSub1, isHid1, prevMenu2, isHid2;
+	
+	var subMenu = getElementsByClass("subMenu");
+	
+	for (var i=0; i<mainMenu.length; i++) {
+	  (function (pos){
+	    mainMenu[pos].getElementsByTagName("img")[0].onmouseover = function(){
+	      if(prevMenu1) menuHidden(prevMenu1, prevSub1);
+	      prevMenu1 = this;
+	      this.src = this.src.replace("Off", "On");
+	      prevSub1 = document.getElementById("sub"+("0"+(pos+1)).match(/..$/));
+	      prevSub1.style.display = "block";
+	    };
+	
+	    mainMenu[pos].onmouseout = function(e){
+	      var bool, e= e || event;
+	      (function (obj, tobj) {
+	        var childs = obj.childNodes;
+	        for (var x=0; x<childs.length; x++) {
+	          if(childs[x] == tobj) bool = true;
+	          else arguments.callee(childs[x], tobj);
+	        }
+	      })(this, document.elementFromPoint(e.clientX, e.clientY));
+	      if(flag1){
+	          if(bool) return false;
+	          menuHidden(prevMenu1, prevSub1);
+	      }
+	    };
+	  })(i);
+	}
+	
+	for (var j=0; j<subMenu.length; j++) {
+	  (function (pos){
+	    subMenu[pos].getElementsByTagName("img")[0].onmouseover = function(){
+	      prevMenu2 = this;
+	      this.src = this.src.replace("Off", "On");
+	      prevSub2 = document.getElementById("sub"+("0"+(pos+1)).match(/..$/));
+	   	  flag2=true;
+	    };
+	
+	    subMenu[pos].onmouseout = function(e){
+	      var bool, e= e || event;
+	      (function (obj, tobj) {
+	        var childs = obj.childNodes;
+	        for (var x=0; x<childs.length; x++) {
+	          if(childs[x] == tobj) bool = true;
+	          else arguments.callee(childs[x], tobj);
+	        }
+	      })(this, document.elementFromPoint(e.clientX, e.clientY));
+	      if(flag2){
+	          if(bool) return false;
+	          menuHidden(prevMenu2, prevSub2);
+	      }
+	    };
+	  })(j);
+	}
+	}
+	
+	window.onload = function() {
+	setEvtGnb();
+	}
+
 
 	doGoTab = function(thisObject, tab) {
 		$(".main_tab").find(">li>a").each(function(index, el) {
@@ -37,7 +133,37 @@
 			$("#tab03").show();
 		}
 	};
+
+	$(document).ready(function() {
+		$("#login").click(function() {
+	
+			var userId = $('#userId').val();
+			var adminPw = $('#adminPw').val();
+			var blank =  /\s/g;
+			
+			if(userId == "") {
+				alert("아이디를 입력하세요");
+				$('#userId').focus();
+				return false;
+			}else if(userId.length == 0 || !userId.trim()){
+	 			alert("연속적인 공백은 입력이 안됩니다");
+	 			$('#userId').focus();
+	 			return false;
+			}else if( userId.match(blank) || userId.length < 2){
+	 			alert("아이디에 공백이 있거나 두자리 미만의 이름을 입력하셨습니다!");
+	 			$('#userId').focus();
+	 			return false;	
+			}
+			
+			document.form1.action = "${path}/web/home.do" 
+			document.form1.submit();
+		})
+	})
+	
 </script>
+	
+<title>서울학교급식포털</title>
+
 </head>
 <body>
 	<div id="wrap">
@@ -47,7 +173,6 @@
 			<li><a href="#contents">메인내용 바로가기</a></li>
 			<li><a href="#footer">하단 바로가기</a></li>
 		</ul>
-		<!--skip E-->
 
 		<!-- header-->
 		<div id="header">
@@ -55,32 +180,24 @@
 				<a href="http://www.naver.com"><img
 					src="resources/images/header/common/logo.gif" alt="서울학교급식포털" /></a>
 			</h1>
-			<div class="topmenu">
-				<ul>
-					<li class="bn"><a href="#">HOME</a></li>
-					<li><a href="#">SITEMAP</a></li>
-					<li class="bn"><input placeholder="아이디"/></li>
-					<li class="bn"><input placeholder="비밀번호"/></li>
-					<li><a href="#">
-					<img src="resources/images/header/common/btn_login.gif" alt="로그인" /></a></li>
-				</ul>
-				<!-- 로그인 했을시 -->
-				
-				<!-- <ul>
-					<li class="bn"><a href="#">HOME</a></li>
-					<li ><a href="#">SITEMAP</a></li>
-					<li class=" f12">"교직원 <span class="orange">홍길동</span> 님 환영합니다."</li> 
-				</ul>	 -->			
-		
-		<!-- 		<ul>
-					<li class="bn f12">교직원 <span class="orange">홍길동</span>님 환영합니다.
-					</li>
-					<li class="bn"><a href="#"><img
-							src="resources/images/header/common/btn_join.gif" alt="회원등록" /></a></li>
-				</ul> -->
-
-
-			</div>
+				<form method="post" name="form1">	
+					<div class="topmenu">
+						<ul>
+							<li class="bn"><a href="${path }/web/home.do">HOME</a></li>
+							<li><a href="#">SITEMAP</a></li>
+							<c:choose>
+								<c:when test="${sessionScope.memberName != null }">
+										<%@ include file="login.jsp"%>		
+								</c:when>
+							<c:otherwise>
+									<c:if test="${sessionScope.memberName == null }">
+										<%@ include file="logout.jsp"%>	
+									</c:if>
+							</c:otherwise>
+							</c:choose>
+						</ul>
+					</div>
+				</form>
 			<div id="gnb">
 				<h2>주메뉴</h2>
 				<ul class="MM">
@@ -88,9 +205,9 @@
 							src="resources/images/header/common/mm_infoOff.gif" id="sel1"
 							alt="서울학교급식소개" /></a>
 						<div class="subMenu" id="sub01" style="display: none;">
-							<div class="boxSR">
+							<div class="boxSR on">
 								<ul class="boxSM">
-									<li class="left_bg"></li>
+									<li class="left_bg" ></li>
 									<li class="subMenu"><a href="#"><img
 											src="resources/images/header/common/sm_info01Off.gif"
 											alt="인사말" /></a></li>
@@ -215,8 +332,8 @@
 									<li class="subMenu"><a href="#"><img
 											src="resources/images/header/common/sm_part04Off.gif"
 											alt="자유게시판" /></a></li>
-									<li class="last subMenu"><a href="#"><img
-											src="resources/images/header/common/sm_part04Off.gif"
+									<li class="last subMenu"><a href="${path }/web/researchList.do"><img
+											src="resources/images/header/common/sm_part05Off.gif"
 											alt="설문조사" /></a></li>
 									<li class="right_bg"></li>
 								</ul>
@@ -544,4 +661,5 @@
 		</div>
 	</div>
 </body>
+
 </html>

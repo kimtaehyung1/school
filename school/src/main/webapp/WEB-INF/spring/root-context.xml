@@ -15,27 +15,27 @@
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<!-- DataSource 설정 -->
-	<!-- <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+	 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		id="dataSource">
 		<property value="oracle.jdbc.driver.OracleDriver" name="driverClassName" />
 		<property value="jdbc:oracle:thin:@localhost:1521:XE" name="url" />
 		<property value="test" name="username" />
 		<property value="1004" name="password" />
-	</bean> -->
+	</bean> 
 	<!-- sqlsessionFactory 객체 설정 -->
-<!-- 	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="SqlSessionFactory">
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="SqlSessionFactory">
 		<property name="dataSource" ref="dataSource" />
 		
-		mybatis-config.xml이 스프링 시작될때 같이 실행되도록 설정하기 
+		<!-- mybatis-config.xml이 스프링 시작될때 같이 실행되도록 설정하기  -->
 		<property value="classpath:mybatis-config.xml" name="configLocation" />
-		XML Mapper 인식하게 설정
+		<!-- XML Mapper 인식하게 설정 -->
 		<property value="classpath*:/mappers/**/*Mapper.xml" name="mapperLocations" />
 	</bean>
-	 -->
+	 
 	
 	<!-- SQLSessionTemplate설정하기 DAO인터페이스를 만들었기때문에 Mybatis에서 DAO인터페이스를 구현하기위해서 필요한작업 -->
-	<!-- <bean  class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession" destroy-method="clearCache">
+	<bean  class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession" destroy-method="clearCache">
     <constructor-arg name="sqlSessionFactory" ref="SqlSessionFactory" />
-    </bean> -->
+    </bean> 
 		
 </beans>

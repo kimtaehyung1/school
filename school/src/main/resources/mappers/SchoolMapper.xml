@@ -2,6 +2,25 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- <mapper namespace="com.school">
 
-</mapper> -->
+<mapper namespace="cafeteria">
+
+	<select id="loginCheck" resultType="String">
+		select * from tb_00_member
+		where USER_ID = #{userId}
+		and ADMIN_PW = #{adminPw}
+	</select>
+	<select id="memberInfo" resultType="com.school.web.vo.SchoolVO">
+		select
+		MEMBER_NAME as memberName,
+		USER_ID as userId
+		from tb_00_member
+		where USER_ID = #{userId} and ADMIN_PW = #{adminPw}
+	</select>
+	<select id="researchList" resultType="com.school.web.vo.Tb_06_RS_VO">
+  <![CDATA[
+    Select SUR_SEQ as surSeq, SUR_TITLE as surTitle, SUR_SAT_DATE as surSatDate, SUR_END_DATE as surEndDate, CASE WHEN sur_end_date < to_char(sysdate, 'yyyymmdd') THEN '완료'
+       ELSE '진행중' END AS surIsend FROM TB_06_RS order BY SUR_SEQ desc
+  ]]>
+	</select>
+</mapper> 
