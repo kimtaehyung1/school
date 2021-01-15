@@ -8,157 +8,8 @@
 <link rel="stylesheet" href="resources/css/common.css">
 <link rel="stylesheet" href="resources/css/base.css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script type="text/javascript">
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 
-	var flag1=true;
-	var flag2=true;
-	
-	$(document).ready(function(){
-		$(".mainMenu").each(function(index, item){
-			$(item).click(function(){
-				flag1=false;
-			});
-		});
-		
-		$(".subMenu").each(function(index, item){
-			$(item).click(function(){
-				flag1=true;
-				flag2=false;
-			});
-		});
-	});
-	
-	function getElementsByClass(searchClass, node, tag) {
-	 var classElements = new Array();
-	 if ( node == null ) node = document;
-	 if ( tag == null ) tag = '*';
-	 var els = node.getElementsByTagName(tag);
-	 var elsLen = els.length;
-	 var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
-	 for (i = 0, j = 0; i < elsLen; i++) {
-	  if ( pattern.test(els[i].className) ) {
-	    classElements[j] = els[i];
-	    j++;
-	  }
-	}
-	return classElements;
-	}
-	
-	function menuHidden(menu, sub) {
-	menu.src = menu.src.replace("On", "Off");
-	sub.style.display = "none";
-	}
-	
-	function setEvtGnb() {
-	var mainMenu = getElementsByClass("mainMenu");
-	var prevMenu1, prevSub1, isHid1, prevMenu2, isHid2;
-	
-	var subMenu = getElementsByClass("subMenu");
-	
-	for (var i=0; i<mainMenu.length; i++) {
-	  (function (pos){
-	    mainMenu[pos].getElementsByTagName("img")[0].onmouseover = function(){
-	      if(prevMenu1) menuHidden(prevMenu1, prevSub1);
-	      prevMenu1 = this;
-	      this.src = this.src.replace("Off", "On");
-	      prevSub1 = document.getElementById("sub"+("0"+(pos+1)).match(/..$/));
-	      prevSub1.style.display = "block";
-	    };
-	
-	    mainMenu[pos].onmouseout = function(e){
-	      var bool, e= e || event;
-	      (function (obj, tobj) {
-	        var childs = obj.childNodes;
-	        for (var x=0; x<childs.length; x++) {
-	          if(childs[x] == tobj) bool = true;
-	          else arguments.callee(childs[x], tobj);
-	        }
-	      })(this, document.elementFromPoint(e.clientX, e.clientY));
-	      if(flag1){
-	          if(bool) return false;
-	          menuHidden(prevMenu1, prevSub1);
-	      }
-	    };
-	  })(i);
-	}
-	
-	for (var j=0; j<subMenu.length; j++) {
-	  (function (pos){
-	    subMenu[pos].getElementsByTagName("img")[0].onmouseover = function(){
-	      prevMenu2 = this;
-	      this.src = this.src.replace("Off", "On");
-	      prevSub2 = document.getElementById("sub"+("0"+(pos+1)).match(/..$/));
-	   	  flag2=true;
-	    };
-	
-	    subMenu[pos].onmouseout = function(e){
-	      var bool, e= e || event;
-	      (function (obj, tobj) {
-	        var childs = obj.childNodes;
-	        for (var x=0; x<childs.length; x++) {
-	          if(childs[x] == tobj) bool = true;
-	          else arguments.callee(childs[x], tobj);
-	        }
-	      })(this, document.elementFromPoint(e.clientX, e.clientY));
-	      if(flag2){
-	          if(bool) return false;
-	          menuHidden(prevMenu2, prevSub2);
-	      }
-	    };
-	  })(j);
-	}
-	}
-	
-	window.onload = function() {
-	setEvtGnb();
-	}
-
-
-doGoTab = function(thisObject, tab) {
-	$(".business_tab").find(">li>a").each(function(index, el) {
-		$(el).removeClass("business_tab0"+(index+1)+"_on");
-		$(el).addClass("business_tab0"+(index+1));
-	});
-	$(thisObject).addClass("business_tab"+tab+"_on");
-	if("01"==tab){
-		$("#tab02").hide();
-		$("#tab01").show();
-	}else{
-		$("#tab01").hide();
-		$("#tab02").show();
-	}
-};
-
-$(document).ready(function() {
-	$("#login").click(function() {
-		
-
-		var userId = $('#userId').val();
-		var adminPw = $('#adminPw').val();
-		var blank =  /\s/g;
-		
-		if(userId == "") {
-			alert("아이디를 입력하세요");
-			$('#userId').focus();
-			return false;
-		}else if(userId.length == 0 || !userId.trim()){
- 			alert("연속적인 공백은 입력이 안됩니다");
- 			$('#userId').focus();
- 			return false;
-		}else if( userId.match(blank) || userId.length < 2){
- 			alert("아이디에 공백이 있거나 두자리 미만의 이름을 입력하셨습니다!");
- 			$('#userId').focus();
- 			return false;	
-		}
-
-		document.form1.action = "${path}/web/researchList.do"
-		document.form1.submit();
-
-	})
-});
-
-</script>
 <title>서울학교급식포털</title>
 </head>
 <body>
@@ -381,8 +232,11 @@ $(document).ready(function() {
           <!-- btn--> 
           <span class="bbs_btn"> 
 
-		  
-	      <span class="per_l"><a href="#" class="pre_r">글쓰기</a></span>
+		  	<c:choose>
+		  		<c:when test="${sessionScope.memberName != null  }">
+		          <span class="per_l"><a href="${path }/web/researchCreate.do" class="pre_r">글쓰기</a></span>
+		  		</c:when>
+		  	</c:choose>
 		  
 
           </span> 
@@ -418,4 +272,155 @@ $(document).ready(function() {
   </div>
 </div>
 </body>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+
+	var flag1=true;
+	var flag2=true;
+	
+	$(document).ready(function(){
+		$(".mainMenu").each(function(index, item){
+			$(item).click(function(){
+				flag1=false;
+			});
+		});
+		
+		$(".subMenu").each(function(index, item){
+			$(item).click(function(){
+				flag1=true;
+				flag2=false;
+			});
+		});
+	});
+	
+	function getElementsByClass(searchClass, node, tag) {
+	 var classElements = new Array();
+	 if ( node == null ) node = document;
+	 if ( tag == null ) tag = '*';
+	 var els = node.getElementsByTagName(tag);
+	 var elsLen = els.length;
+	 var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
+	 for (i = 0, j = 0; i < elsLen; i++) {
+	  if ( pattern.test(els[i].className) ) {
+	    classElements[j] = els[i];
+	    j++;
+	  }
+	}
+	return classElements;
+	}
+	
+	function menuHidden(menu, sub) {
+	menu.src = menu.src.replace("On", "Off");
+	sub.style.display = "none";
+	}
+	
+	function setEvtGnb() {
+	var mainMenu = getElementsByClass("mainMenu");
+	var prevMenu1, prevSub1, isHid1, prevMenu2, isHid2;
+	
+	var subMenu = getElementsByClass("subMenu");
+	
+	for (var i=0; i<mainMenu.length; i++) {
+	  (function (pos){
+	    mainMenu[pos].getElementsByTagName("img")[0].onmouseover = function(){
+	      if(prevMenu1) menuHidden(prevMenu1, prevSub1);
+	      prevMenu1 = this;
+	      this.src = this.src.replace("Off", "On");
+	      prevSub1 = document.getElementById("sub"+("0"+(pos+1)).match(/..$/));
+	      prevSub1.style.display = "block";
+	    };
+	
+	    mainMenu[pos].onmouseout = function(e){
+	      var bool, e= e || event;
+	      (function (obj, tobj) {
+	        var childs = obj.childNodes;
+	        for (var x=0; x<childs.length; x++) {
+	          if(childs[x] == tobj) bool = true;
+	          else arguments.callee(childs[x], tobj);
+	        }
+	      })(this, document.elementFromPoint(e.clientX, e.clientY));
+	      if(flag1){
+	          if(bool) return false;
+	          menuHidden(prevMenu1, prevSub1);
+	      }
+	    };
+	  })(i);
+	}
+	
+	for (var j=0; j<subMenu.length; j++) {
+	  (function (pos){
+	    subMenu[pos].getElementsByTagName("img")[0].onmouseover = function(){
+	      prevMenu2 = this;
+	      this.src = this.src.replace("Off", "On");
+	      prevSub2 = document.getElementById("sub"+("0"+(pos+1)).match(/..$/));
+	   	  flag2=true;
+	    };
+	
+	    subMenu[pos].onmouseout = function(e){
+	      var bool, e= e || event;
+	      (function (obj, tobj) {
+	        var childs = obj.childNodes;
+	        for (var x=0; x<childs.length; x++) {
+	          if(childs[x] == tobj) bool = true;
+	          else arguments.callee(childs[x], tobj);
+	        }
+	      })(this, document.elementFromPoint(e.clientX, e.clientY));
+	      if(flag2){
+	          if(bool) return false;
+	          menuHidden(prevMenu2, prevSub2);
+	      }
+	    };
+	  })(j);
+	}
+	}
+	
+	window.onload = function() {
+	setEvtGnb();
+	}
+
+
+doGoTab = function(thisObject, tab) {
+	$(".business_tab").find(">li>a").each(function(index, el) {
+		$(el).removeClass("business_tab0"+(index+1)+"_on");
+		$(el).addClass("business_tab0"+(index+1));
+	});
+	$(thisObject).addClass("business_tab"+tab+"_on");
+	if("01"==tab){
+		$("#tab02").hide();
+		$("#tab01").show();
+	}else{
+		$("#tab01").hide();
+		$("#tab02").show();
+	}
+};
+
+$(document).ready(function() {
+	$("#login").click(function() {
+		
+
+		var userId = $('#userId').val();
+		var adminPw = $('#adminPw').val();
+		var blank =  /\s/g;
+		
+		if(userId == "") {
+			alert("아이디를 입력하세요");
+			$('#userId').focus();
+			return false;
+		}else if(userId.length == 0 || !userId.trim()){
+ 			alert("연속적인 공백은 입력이 안됩니다");
+ 			$('#userId').focus();
+ 			return false;
+		}else if( userId.match(blank) || userId.length < 2){
+ 			alert("아이디에 공백이 있거나 두자리 미만의 이름을 입력하셨습니다!");
+ 			$('#userId').focus();
+ 			return false;	
+		}
+
+		document.form1.action = "${path}/web/researchList.do"
+		document.form1.submit();
+
+	})
+});
+
+</script>
 </html>

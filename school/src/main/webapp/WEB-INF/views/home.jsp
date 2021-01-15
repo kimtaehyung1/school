@@ -7,7 +7,11 @@
 <head>
 <link href="resources/css/base.css" rel="stylesheet" type="text/css" />
 <link href="resources/css/common.css" rel="stylesheet" type="text/css" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> -->
+<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+
+	
+<title>서울학교급식포털</title>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
 
@@ -161,9 +165,6 @@
 	})
 	
 </script>
-	
-<title>서울학교급식포털</title>
-
 </head>
 <body>
 	<div id="wrap">

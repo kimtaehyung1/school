@@ -8,10 +8,16 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.school.web.dao.SchoolDAO;
 import com.school.web.vo.SchoolVO;
-import com.school.web.vo.Tb_06_RS_VO;
+
+import net.sf.json.JSONObject;
+
+import com.school.web.vo.RSIVO;
+import com.school.web.vo.RSQVO;
+import com.school.web.vo.RSVO;
 
 @Service
 public class SchoolService {
@@ -41,8 +47,12 @@ public class SchoolService {
 		session.invalidate();
 	}
 	
-	public List<Tb_06_RS_VO> researchList(Tb_06_RS_VO vo) {
-		
+	public List<RSVO> researchList(RSVO vo) {
 		return schoolDao.researchList(vo);
 	}
+	
+	public void create(RSIVO rsivo) {
+		schoolDao.create(rsivo);
+	}
+
 }

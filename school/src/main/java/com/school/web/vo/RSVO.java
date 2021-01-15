@@ -2,7 +2,7 @@ package com.school.web.vo;
 
 import java.util.Date;
 
-public class Tb_06_RS_VO {
+public class RSVO {
 	
    private String surSeq;
    private String surTitle;

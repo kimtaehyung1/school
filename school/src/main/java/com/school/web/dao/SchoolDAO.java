@@ -10,8 +10,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.school.web.vo.SchoolVO;
-import com.school.web.vo.Tb_06_RS_VO;
+import com.school.web.vo.RSIVO;
+import com.school.web.vo.RSQVO;
+import com.school.web.vo.RSVO;
 
 @Repository
 public class SchoolDAO {
@@ -21,7 +25,6 @@ public class SchoolDAO {
 	
 	public boolean loginCheck(SchoolVO vo) {
 		String result = sqlSession.selectOne("cafeteria.loginCheck", vo);
-		System.out.println(result);
 		return (result == null)? false : true;
 	}
 	
@@ -33,7 +36,13 @@ public class SchoolDAO {
 		
 	}
 	
-	public List<Tb_06_RS_VO> researchList(Tb_06_RS_VO vo) {
+	public List<RSVO> researchList(RSVO vo) {
 		return sqlSession.selectList("cafeteria.researchList", vo);
 	}
+	
+	public void create(RSIVO rsivo) {
+		  sqlSession.insert("cafeteria.researchRSI", rsivo);
+	}
+
+
 }
