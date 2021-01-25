@@ -13,17 +13,20 @@
 	<select id="memberInfo" resultType="com.school.web.vo.SchoolVO">
 		select
 		MEMBER_NAME as memberName,
-		USER_ID as userId
+		USER_ID as userId,
+		ADMIN_YN as adminYn,
+		ADMIN_PW as adminPw
 		from tb_00_member
 		where USER_ID = #{userId} and ADMIN_PW = #{adminPw}
 	</select>
-	<select id="researchList" resultType="com.school.web.vo.RSVO">
+	<!-- 설문 리스트 -->
+	<select id="researchList" resultType="com.school.web.vo.RSIVO">
   <![CDATA[
-    Select SUR_SEQ as surSeq, SUR_TITLE as surTitle, SUR_SAT_DATE as surSatDate, SUR_END_DATE as surEndDate, CASE WHEN sur_end_date < to_char(sysdate, 'yyyymmdd') THEN '완료'
-       ELSE '진행중' END AS surIsend FROM TB_06_RS order BY SUR_SEQ desc
+      select SURI_SEQ as suriSeq, SUR_TITLE as surTitle, SUR_SAT_DATE as surSatDate, SUR_END_DATE as surEndDate, CASE WHEN sur_end_date < to_char(sysdate, 'yyyymmdd') THEN '완료'
+       ELSE '진행중' END AS surIsend FROM TB_06_RSI order BY SURI_SEQ desc
   ]]>
 	</select>
-	
+	<!-- 글쓰기 저장  -->
 	<insert id="researchRSI">
 		insert into TB_06_RSI 
 		(
@@ -34,14 +37,14 @@
 			QUE_CNT,
 			SUR_SAT_DATE,
 			SUR_END_DATE,
-			ATTACH_NAME,
-			ATTACH_PATH,
 			SURI_TITLE1,
 			SURI_TITLE2,
 			SURI_TITLE3,
 			SURI_TITLE4,
 			SURI_TITLE5,
 			SURI_TITLE6,
+			SURI_TITLE7,
+			SURI_NUM,
 			WRITER,
 			REG_NAME,
 			REG_DATE,
@@ -54,23 +57,103 @@
 			SURI_NUM5
 		) values (
 			(SELECT NVL(MAX(to_number(SURI_SEQ)+1),1)FROM TB_06_RSI),
-			(SELECT NVL(MAX(SUR_SEQ),1)FROM TB_06_RS),
-			(SELECT NVL(MAX(SURQ_SEQ),1)FROM TB_06_RSQ),
+			(SELECT NVL(MAX(SUR_SEQ),1)+1 FROM TB_06_RS),
+			(SELECT NVL(MAX(SURQ_SEQ),1)+1 FROM TB_06_RSQ),
 			#{surTitle},
 			#{queCnt},
 			#{surSatDate}, 
 			#{surEndDate},
-			'name',
-			#{attachPath},
 			#{suriTitle1},
 			#{suriTitle2},
 			#{suriTitle3},
 			#{suriTitle4},
 			#{suriTitle5},
 			#{suriTitle6},
+			#{suriTitle7},
+			'',
 			#{writer}, #{regName}, sysdate, #{udtName}, sysdate
 			,'1','2','3','4','5'
 		)
 	</insert>
-
+    <!-- 설문 상세 정보  -->
+    <select id="researchDetail" resultType="com.school.web.vo.RSIVO">
+    	select 
+    	SURI_SEQ as suriSeq,
+		SUR_TITLE as surTitle,
+		SUR_SAT_DATE as surSatDate,
+		SUR_END_DATE as surEndDate,
+		QUE_CNT as queCnt,
+		SURI_TITLE1 as suriTitle1,
+		SURI_TITLE2 as suriTitle2,
+		SURI_TITLE3 as suriTitle3,
+		SURI_TITLE4 as suriTitle4,
+		SURI_TITLE5 as suriTitle5,
+		SURI_TITLE6 as suriTitle6,
+		SURI_TITLE7 as suriTitle7,
+		SURI_NUM1 as suriNum1,
+		SURI_NUM2 as suriNum2,
+		SURI_NUM3 as suriNum3,
+		SURI_NUM4 as suriNum4,
+		SURI_NUM5 as suriNum5,
+		WRITER as writer,
+		REG_DATE as regDate
+		
+		from TB_06_RSI
+		where SURI_SEQ = #{suriSeq}
+    </select>
+    <update id="researchUpdate" parameterType="com.school.web.vo.RSIVO">
+    	update tb_06_rsi set
+		SUR_TITLE = #{surTitle},
+		SUR_SAT_DATE  = #{surSatDate},
+		SUR_END_DATE  = #{surEndDate},
+		QUE_CNT  = #{queCnt},
+		SURI_TITLE1  = #{suriTitle1},
+		SURI_TITLE2  = #{suriTitle2},
+		SURI_TITLE3  = #{suriTitle3},
+		SURI_TITLE4  = #{suriTitle4},
+		SURI_TITLE5  = #{suriTitle5},
+		SURI_TITLE6  = #{suriTitle6},
+		SURI_TITLE7  = #{suriTitle7},
+		SURI_NUM1  = '1',
+		SURI_NUM2  = '2',
+		SURI_NUM3  = '3',
+		SURI_NUM4  = '4',
+		SURI_NUM5  = '5',
+        writer = #{writer},
+        reg_name = #{regName},
+        reg_date = #{regDate},
+        udt_name = #{udtName},
+        udt_date = sysdate
+		
+		where SURI_SEQ = #{suriSeq}
+    </update>
+    <delete id="researchDelete" parameterType="com.school.web.vo.RSIVO">
+    	delete tb_06_rsi where suri_seq = #{suriSeq}
+    </delete>
+    <select id="count" resultType="int">
+    	select count(*) from tb_00_member
+		where user_id = #{userId} and admin_pw = #{adminPw}
+    </select>
+    
+    
+    <!-- 상세저장 -->
+    <insert id="insert" >
+	INSERT INTO TB_06_RSR (
+        SURR_SEQ, SUR_SEQ, SURQ_SEQ, SURI_SEQ, SURI_NUM, DESCRIPTION, WRITER,
+        REG_NAME, REG_DATE, UDT_NAME, UDT_DATE, SURQ_TITLE
+	   ) VALUES (
+	   (SELECT NVL(MAX(TO_NUMBER(SURR_SEQ)+1),1)FROM TB_06_RSR),
+	   (SELECT NVL(MAX(SUR_SEQ),1)+1 FROM TB_06_RS),
+	   (SELECT NVL(MAX(SURQ_SEQ),1)+1 FROM TB_06_RSQ),
+	   (SELECT NVL(MAX(SURI_SEQ),1)+1 FROM TB_06_RSI),
+	   #{suriNum},
+	   #{description} <!-- suriTitle7 -->,
+	   #{writer},
+	   #{regName},
+	   #{regDate},
+	   #{udtName},
+	   SYSDATE,
+	   #{surqTitle}   
+	   )
+    </insert>
 </mapper> 

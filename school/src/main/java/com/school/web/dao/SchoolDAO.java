@@ -4,18 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.school.web.vo.SchoolVO;
 import com.school.web.vo.RSIVO;
-import com.school.web.vo.RSQVO;
-import com.school.web.vo.RSVO;
+import com.school.web.vo.RSRVO;
+import com.school.web.vo.SchoolVO;
 
 @Repository
 public class SchoolDAO {
@@ -36,13 +33,32 @@ public class SchoolDAO {
 		
 	}
 	
-	public List<RSVO> researchList(RSVO vo) {
+	public List<RSIVO> researchList(RSIVO vo) {
 		return sqlSession.selectList("cafeteria.researchList", vo);
 	}
 	
-	public void create(RSIVO rsivo) {
-		  sqlSession.insert("cafeteria.researchRSI", rsivo);
+	public int create(RSIVO rsivo) {
+		  return sqlSession.insert("cafeteria.researchRSI", rsivo);
 	}
 
+	public RSIVO researchDetail(String suriSeq) {
+		RSIVO rsivo = sqlSession.selectOne("cafeteria.researchDetail", suriSeq);
+		return rsivo;	
+	}
+	
+	public int update(RSIVO rsivo) {
+		return sqlSession.update("cafeteria.researchUpdate", rsivo);
+	}
 
+	public int delete(RSIVO rsivo) {
+		return sqlSession.delete("cafeteria.researchDelete", rsivo);
+	}
+	
+	public int count(SchoolVO vo) {
+		return sqlSession.selectOne("cafeteria.count", vo);
+	}
+	
+	public int insert(RSRVO rsrvo) {
+		return sqlSession.insert("cafeteria.insert", rsrvo);
+	}
 }

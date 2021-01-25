@@ -10,8 +10,6 @@ public class RSIVO {
 	private String queCnt;
 	private String surSatDate;
 	private String surEndDate;
-	private String attachName;
-	private String attachPath;
 
 	private String suriTitle1;
 	private String suriTitle2;
@@ -19,6 +17,8 @@ public class RSIVO {
 	private String suriTitle4;
 	private String suriTitle5;
 	private String suriTitle6;
+	private String suriTitle7;
+	private String suriNum;
 
 	private String writer;
 	private String regName;
@@ -31,6 +31,7 @@ public class RSIVO {
 	private String suriNum3;
 	private String suriNum4;
 	private String suriNum5;
+	private String surIsend;
 	public String getSuriSeq() {
 		return suriSeq;
 	}
@@ -73,18 +74,6 @@ public class RSIVO {
 	public void setSurEndDate(String surEndDate) {
 		this.surEndDate = surEndDate;
 	}
-	public String getAttachName() {
-		return attachName;
-	}
-	public void setAttachName(String attachName) {
-		this.attachName = attachName;
-	}
-	public String getAttachPath() {
-		return attachPath;
-	}
-	public void setAttachPath(String attachPath) {
-		this.attachPath = attachPath;
-	}
 	public String getSuriTitle1() {
 		return suriTitle1;
 	}
@@ -120,6 +109,18 @@ public class RSIVO {
 	}
 	public void setSuriTitle6(String suriTitle6) {
 		this.suriTitle6 = suriTitle6;
+	}
+	public String getSuriTitle7() {
+		return suriTitle7;
+	}
+	public void setSuriTitle7(String suriTitle7) {
+		this.suriTitle7 = suriTitle7;
+	}
+	public String getSuriNum() {
+		return suriNum;
+	}
+	public void setSuriNum(String suriNum) {
+		this.suriNum = suriNum;
 	}
 	public String getWriter() {
 		return writer;
@@ -181,16 +182,21 @@ public class RSIVO {
 	public void setSuriNum5(String suriNum5) {
 		this.suriNum5 = suriNum5;
 	}
+	public String getSurIsend() {
+		return surIsend;
+	}
+	public void setSurIsend(String surIsend) {
+		this.surIsend = surIsend;
+	}
 	@Override
 	public String toString() {
 		return "RSIVO [suriSeq=" + suriSeq + ", surSeq=" + surSeq + ", surqSeq=" + surqSeq + ", surTitle=" + surTitle
-				+ ", queCnt=" + queCnt + ", surSatDate=" + surSatDate + ", surEndDate=" + surEndDate + ", attachName="
-				+ attachName + ", attachPath=" + attachPath + ", suriTitle1=" + suriTitle1 + ", suriTitle2="
+				+ ", queCnt=" + queCnt + ", surSatDate=" + surSatDate + ", surEndDate=" + surEndDate + ", suriTitle1=" + suriTitle1 + ", suriTitle2="
 				+ suriTitle2 + ", suriTitle3=" + suriTitle3 + ", suriTitle4=" + suriTitle4 + ", suriTitle5="
-				+ suriTitle5 + ", suriTitle6=" + suriTitle6 + ", writer=" + writer + ", regName=" + regName
-				+ ", regDate=" + regDate + ", udtName=" + udtName + ", udtDate=" + udtDate + ", suriNum1=" + suriNum1
-				+ ", suriNum2=" + suriNum2 + ", suriNum3=" + suriNum3 + ", suriNum4=" + suriNum4 + ", suriNum5="
-				+ suriNum5 + "]";
+				+ suriTitle5 + ", suriTitle6=" + suriTitle6 + ", suriTitle7=" + suriTitle7 + ", suriNum=" + suriNum
+				+ ", writer=" + writer + ", regName=" + regName + ", regDate=" + regDate + ", udtName=" + udtName
+				+ ", udtDate=" + udtDate + ", suriNum1=" + suriNum1 + ", suriNum2=" + suriNum2 + ", suriNum3="
+				+ suriNum3 + ", suriNum4=" + suriNum4 + ", suriNum5=" + suriNum5 + ", surIsend=" + surIsend + "]";
 	}
 	
 	

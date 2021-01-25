@@ -25,7 +25,7 @@
   <!-- header-->
   <div id="header">
     <h1><img src="resources/images/header/common/logo.gif" alt="서울학교급식포털" /></h1>
-     <form method="post" name="form1" id="form1">	
+     <form method="post" name="form1">	
 					<div class="topmenu">
 						<ul>
 							<li class="bn"><a href="${path }/web/home.do">HOME</a></li>
@@ -155,7 +155,6 @@
     </div>
   </div>
   <!-- //header--> 
-  
   <!-- container-->
   <div id="container">
     <div id="contents">
@@ -173,8 +172,6 @@
         <h3><img src="resources/images/sub/particiation/title_05.gif" alt="급식기구관리전환" /></h3>
         <p class="history"><img src="resources/images/sub/history_home.gif" alt="home" /> 알림마당 <img src="resources/images/sub/history_arrow.gif" alt="다음" /> <strong>설문조사</strong></p>
         <p class="pt30"></p>
-        
-        
 	        <form method="post" name="createForm" >
         <div class="tbl_box">
 	          <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbl_type01" summary="설문조사">
@@ -189,17 +186,16 @@
 	            <col width="15%"/>
 	            <col width="%"/>
 	            </colgroup>
-	          
 	            <tbody>
 	              <tr>
 	                <th>제목</th>
-	                <td colspan="5" class="tl"><input type="text" id="surTitle" name="surTitle" style="width: 200px" maxlength="20"/></td>
+	                <td colspan="5" class="tl"><input type="text" id="surTitle" maxlength="20" name="surTitle" value="${vo.surTitle }" style="width: 200px"/></td>
 	                </tr>
 	              <tr>
 	                <th>시작일</th>
-	                <td class="tl"><input type="text" id="surSatDate" name="surSatDate"  style="width:100px;" maxlength="8"/></td>
+	                <td class="tl"><input type="text" id="surSatDate" name="surSatDate" value="${vo.surSatDate }" maxlength="8" style="width:100px;" /></td>
 	                <th>종료일</th>
-	                <td class="tl"><input type="text" id="surEndDate" name="surEndDate"  style="width:100px;" maxlength="8"/></td>
+	                <td class="tl"><input type="text" id="surEndDate" name="surEndDate" value="${vo.surEndDate }" maxlength="8" style="width:100px;" /></td>
 	                <th>결과확인</th>
 	                <td class="tl"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td>
 	              </tr>
@@ -215,18 +211,30 @@
 	                </td>
 	                </tr>
 	              <tr>
-	              
 	               <td colspan="6" class="tl">
-	               	    <div class="research">
-	             			
+	               	    <div class="research" >
+	             	   <c:forEach var="vo" items="${list01 }" varStatus="status">
+													<p>${status.count }. <input type="text" value="${vo }" class="inp" maxlength="50"/></p>
+												 <ul class="test-li">
+														<li><input type="text" value="${list02[status.index] }" class="inp" maxlength="50"/></li> 
+														<li><input type="text" value="${list03[status.index] }" class="inp" maxlength="50"/></li> 
+														<li><input type="text" value="${list04[status.index] }" class="inp" maxlength="50"/></li> 
+														<li><input type="text" value="${list05[status.index] }" class="inp" maxlength="50"/></li> 
+														<li><input type="text" value="${list06[status.index] }" class="inp" maxlength="50"/></li> 
+														<li>선택사유&nbsp;&nbsp;&nbsp; <input type="text" value="${list07[status.index] }" class="inp" maxlength="40" style="width: 600px;" />
+														</li>
+														<br />
+													</ul>
+												</c:forEach>
 						</div>
-						
 	               </td>
-	              		<input type="hidden" id="writer" name="writer" value="${sessionScope.memberName }"/>
-	               		<input type="hidden" id="regName" name="regName" value="${sessionScope.memberName }"/>
+	              		<input type="hidden" id="suriSeq" name="suriSeq" value="${vo.suriSeq}" />
+	              		<input type="hidden" id="regDate" name="regDate" value="${vo.regDate }" />
+	               		<input type="hidden" id="writer" name="writer" value="${vo.writer }"/>
+	               		<input type="hidden" id="regName" name="regName" value="${vo.writer}"/>
 	               		<input type="hidden" id="udtName" name="udtName" value="${sessionScope.memberName }"/>
 	              </tr>
-	      <!--         <tr>
+	         <!--      <tr>
 	               <th>첨부파일</th>
 	               <td>
 	               		
@@ -240,20 +248,16 @@
           <p class="pt40"></p>
           <!-- btn--> 
           <span class="bbs_btn"> 
-
           <span class="wte_l"><a href="${path }/web/researchList.do" class="wte_r">목록</a></span>
-          <span class="wte_l"><a href="#" class="wte_r" id="create">등록</a></span>
+          <span class="wte_l"><a href="#" class="wte_r" id="update">저장</a></span>
 <!--           <span class="per_l"><a href="#" class="pre_r">등록</a></span> -->
           <span class="wte_l"><a href="javascript:back();" class="wte_r">취소</a></span>
-          
-
           </span> 
           <!-- //btn--> 
           
         </div>
         </form>
       </div>
-      
       <p class="bottom_bg"></p>
     </div>
   </div>
@@ -280,22 +284,27 @@
 
 <script type="text/javascript">
 
-	function back() {
-		window.history.back();
-	}
-
- 	$(document).ready(function(){
-		$("#create").click(function(){
+	$(document).ready(function(){
+		$("#update").click(function(){
 			
+			var suriSeq = $("#suriSeq").val();
 			var surTitle = $("#surTitle").val(); //제목 
 			var surSatDate = $("#surSatDate").val(); //시작일
 			var surEndDate = $("#surEndDate").val(); //종료일
 			var queCnt = $("#queCnt").val().replace("개",""); //문항수
 			var writer = $('#writer').val();
-			var regName = $('#regName').val();
-			var udtName = $('#udtName').val();
-
-			//문제 문항들 
+			var regName = $("#regName").val();
+			var udtName = $("#udtName").val();
+			var regDate = $("#regDate").val();
+					
+			var date = new Date(regDate);
+		 	var year = date.getFullYear().toString().substring(2, 4);              //yyyy
+		    var month = (1 + date.getMonth());          //M
+		    month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+		    var day = date.getDate();                   //d
+		    day = day >= 10 ? day : '0' + day;
+		    var regDateString = year + '/' + month + '/' + day;//day 두자리로 저장 
+		    
 			var suriArray = [];
 			$('input[class="inp"]').each(function(i){
 				suriArray.push($(this).val());
@@ -320,69 +329,71 @@
 				return false;
 			} 
 			
+			
 			var param = {
+					"suriSeq": suriSeq,
 				    "surTitle":surTitle,
 					"queCnt": queCnt,
 					"surSatDate":surSatDate,
 					"surEndDate":surEndDate,
 					"writer": writer,
 					"regName": regName,
+					"regDate": regDateString,
 					"udtName": udtName,
 					"suriList": suriArray
 			} 
 			
-			/*     var jsonData = JSON.stringify(param); */
-				  /*   jQuery.ajaxSettings.traditional = true;   */
-			    
- 	 	  	 $.ajax({
-				url: "researchCreate.do",
+		  	$.ajax({
+				url: "researchUpdate.do",
 			 	dataType: "html",
 				type: "post",
 				data: param,
 				success: function() {
 					alert("성공");
-					window.location.href="${path}/web/researchList.do";
+					window.location.href="${path}/web/researchDetail.do?suriSeq="+suriSeq; 
 				}, error: function(request,status,error){
 			        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
-			       }
+			       }  
 			});  
 		});
-	}); 
+	});
+
+	function back() {
+		window.history.back();
+	}
 
 	  function fn_selectcnt(queCnt){
-		selectCnt = queCnt.replace("개","");
-		$(".research").empty();
-			for(var i =1; i<=selectCnt ;i++){
+			selectCnt = queCnt.replace("개","");
+			$(".research").empty();
+				for(var i =1; i<=selectCnt ;i++){
+						var div = $("<div/>");
+						var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='suriTitle1'  class='inp' maxlength='50'></input></p>");
+						var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
+						var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
+						var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
+						var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
+						var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
+						var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>");
+						$(div).append(c_title,q1,q2,q3,q4,q5,q6);
+						$(".research").append(div);
+				}
+			} 
+			
+/* 		$(function(){
+				for(var i =1; i<=5 ;i++){
 					var div = $("<div/>");
-					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='suriTitle1'  class='inp' maxlength='50'></input></p>");
-					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle'   class='inp'maxlength='50'/></li>");
-					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q6 = $("</ul><br>");
-					/* var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>"); */
+					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' class='inp'></input></p>");
+					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' class='inp'/></li>");
+					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' class='inp'/></li>");
+					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' class='inp'/></li>");
+					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' class='inp'/></li>");
+					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' class='inp'/></li>");
+					var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:650px;'/></li></ul><br>");
 					$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 					$(".research").append(div);
-			}
-		} 
-		
-	$(function(){
-			for(var i =1; i<=5 ;i++){
-				var div = $("<div/>");
-				var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle'  id='suriTitle1' class='inp' maxlength='50'></input></p>");
-				var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q6 = $("</ul><br>");
-/* 				var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>"); */
-				$(div).append(c_title,q1,q2,q3,q4,q5,q6);
-				$(".research").append(div);
-			}
-		}) 
-
+				}
+			})  */
+ 
 	var flag1=true;
 	var flag2=true;
 	
@@ -425,6 +436,7 @@
 	function setEvtGnb() {
 	var mainMenu = getElementsByClass("mainMenu");
 	var prevMenu1, prevSub1, isHid1, prevMenu2, isHid2;
+	
 	var subMenu = getElementsByClass("subMenu");
 	
 	for (var i=0; i<mainMenu.length; i++) {
@@ -528,7 +540,7 @@
 				return false;
 			}
 			
-			document.form1.action = "${path}/web/researchCreate.do" 
+			document.form1.action = "${path}/web/researchUpdate.do" 
 			document.form1.submit();
 		})
 	})
@@ -562,11 +574,12 @@
 				
 				/* if(adminPw == ) */
 			
-				document.form1.action = "${path}/web/researchCreate.do" 
+				document.form1.action = "${path}/web/researchUpdate.do" 
 				document.form1.submit();
 			}
 		});
 	});
+	
 	$(document).ready(function(){
 		$("#surSatDate").datepicker({
 		     changeMonth: true, 

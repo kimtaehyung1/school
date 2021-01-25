@@ -14,9 +14,9 @@
 </script>
 	</head>
 		<body>
-			<li class="bn"><input placeholder="아이디" name="userId" id="userId" /></li>
-			<li class="bn"><input placeholder="비밀번호" name="adminPw" id="adminPw" type="password" /></li>
-			<button type="button" style="height: 18px; margin-left: 5px" id="login">
+			<li class="bn"><input placeholder="아이디" name="userId" id="userId" maxlength="10"/></li>
+			<li class="bn"><input placeholder="비밀번호" name="adminPw" id="adminPw" type="password" maxlength="8"/></li>
+			<button type="button" style="height: 18px; margin-left: 5px" id="login" >
 				<img src="resources/images/header/common/btn_login.gif" alt="로그인" />
 			</button>
 		</body>

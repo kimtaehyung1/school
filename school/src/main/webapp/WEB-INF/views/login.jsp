@@ -14,11 +14,20 @@
 </script>
 	</head>
 		<body>
-			<li>관리자 <span class="orange">${sessionScope.memberName}(${sessionScope.userId})</span>
-			님 환영합니다.
-			</li>
-			<li><a href="${path }/web/logout.do">
+				<c:if test="${sessionScope.adminYn == 'Y' }" var="user">
+					<li>관리자 <span class="orange">${sessionScope.memberName}(${sessionScope.userId})</span>
+					님 환영합니다.
+					</li>
+				</c:if>
+				<c:if test="${sessionScope.adminYn == 'N' }">
+					<li>회원 <span class="orange">${sessionScope.memberName}(${sessionScope.userId})</span>
+					님 환영합니다.
+					</li>
+				</c:if>
+				<li><a href="${path }/web/logout.do">
 				<img src="resources/images/header/common/btn_logout.gif" alt="로그아웃" />
 			</a></li>
+		
 		</body>
+		
 </html>

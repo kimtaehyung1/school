@@ -25,7 +25,7 @@
   <!-- header-->
   <div id="header">
     <h1><img src="resources/images/header/common/logo.gif" alt="서울학교급식포털" /></h1>
-   <form method="post" name="form1">	
+   <form method="post" name="form1" id="form1">	
 					<div class="topmenu">
 						<ul>
 							<li class="bn"><a href="${path }/web/home.do">HOME</a></li>
@@ -40,6 +40,11 @@
 									</c:if>
 							</c:otherwise>
 							</c:choose>
+							<c:if test="${msg == 'failure' }">
+								<li style="color: red;">
+									<p>비밀번호가 일치하지 않습니다</p>
+								</li>
+							</c:if>
 						</ul>
 					</div>
 				</form>
@@ -181,7 +186,7 @@
             <col width="15%"/>
             <col width="15%"/>
             <col width="10%"/>
-            <col width="8%"/>
+        <%--     <col width="8%"/> --%>
             <col width="10%"/>
             </colgroup>
             <tbody>
@@ -191,18 +196,18 @@
                 <th>시작일</th>
                 <th>마감일</th>
                 <th>완료여부</th>
-                <th>첨부</th>
+              <!--   <th>첨부</th> -->
                 <th>결과확인</th>
               </tr>
              
               <c:forEach items="${list }" var="vo">
              	  <tr>
-	                <td>${vo.surSeq }</td>
-	                <td class="tl">${vo.surTitle }</td>
+	                <td>${vo.suriSeq }</td>
+	                <td><a href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a></td>
 	                <td>${vo.surSatDate }</td>                
 	                <td>${vo.surEndDate }</td>
 	                <td>${vo.surIsend }</td>
-	                <td><img src="resources/images/sub/btn/btn_pdf.gif" alt="pdf" /></td>
+	              <!--   <td><img src="resources/images/sub/btn/btn_pdf.gif" alt="pdf" /></td> -->
 	                <td><a href="#"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
 	              </tr>
               </c:forEach>
@@ -233,7 +238,7 @@
           <span class="bbs_btn"> 
 
 		  	<c:choose>
-		  		<c:when test="${sessionScope.memberName != null  }">
+		  		<c:when test="${sessionScope.adminYn == 'Y'  }">
 		          <span class="per_l"><a href="${path }/web/researchCreate.do" class="pre_r">글쓰기</a></span>
 		  		</c:when>
 		  	</c:choose>
@@ -274,6 +279,10 @@
 </body>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
+
+	function detail(suriSeq){
+		location.href = 'researchDetail.do?suriSeq='+suriSeq;
+	}
 
 	var flag1=true;
 	var flag2=true;
@@ -379,48 +388,87 @@
 	}
 
 
-doGoTab = function(thisObject, tab) {
-	$(".business_tab").find(">li>a").each(function(index, el) {
-		$(el).removeClass("business_tab0"+(index+1)+"_on");
-		$(el).addClass("business_tab0"+(index+1));
-	});
-	$(thisObject).addClass("business_tab"+tab+"_on");
-	if("01"==tab){
-		$("#tab02").hide();
-		$("#tab01").show();
-	}else{
-		$("#tab01").hide();
-		$("#tab02").show();
-	}
-};
-
-$(document).ready(function() {
-	$("#login").click(function() {
-		
-
-		var userId = $('#userId').val();
-		var adminPw = $('#adminPw').val();
-		var blank =  /\s/g;
-		
-		if(userId == "") {
-			alert("아이디를 입력하세요");
-			$('#userId').focus();
-			return false;
-		}else if(userId.length == 0 || !userId.trim()){
- 			alert("연속적인 공백은 입력이 안됩니다");
- 			$('#userId').focus();
- 			return false;
-		}else if( userId.match(blank) || userId.length < 2){
- 			alert("아이디에 공백이 있거나 두자리 미만의 이름을 입력하셨습니다!");
- 			$('#userId').focus();
- 			return false;	
+	doGoTab = function(thisObject, tab) {
+		$(".business_tab").find(">li>a").each(function(index, el) {
+			$(el).removeClass("business_tab0"+(index+1)+"_on");
+			$(el).addClass("business_tab0"+(index+1));
+		});
+		$(thisObject).addClass("business_tab"+tab+"_on");
+		if("01"==tab){
+			$("#tab02").hide();
+			$("#tab01").show();
+		}else{
+			$("#tab01").hide();
+			$("#tab02").show();
 		}
-
-		document.form1.action = "${path}/web/researchList.do"
-		document.form1.submit();
-
+	};
+	
+	
+	$(document).ready(function() {
+		$("#login").click(function() {
+	
+			var userId = $('#userId').val();
+			var adminPw = $('#adminPw').val();
+			var blank =  /\s/g;
+			
+			if(userId == "") {
+				alert("아이디를 입력하세요");
+				$('#userId').focus();
+				return false;
+			}else if(userId.length == 0 || !userId.trim()){
+	 			alert("연속적인 공백은 입력이 안됩니다");
+	 			$('#userId').focus();
+	 			return false;
+			}else if( userId.match(blank) || userId.length < 2){
+	 			alert("아이디에 공백이 있거나 두자리 미만의 이름을 입력하셨습니다!");
+	 			$('#userId').focus();
+	 			return false;	
+			}
+			
+			if(adminPw == "") {
+				alert("비밀번호를 입력하세요");
+				$("#adminPw").focus();
+				return false;
+			}
+			
+			document.form1.action = "${path}/web/researchList.do" 
+			document.form1.submit();
+		})
 	})
-});
-
+	
+	$(document).ready(function(){
+		$("#form1").keypress(function(e) {
+			if(e.keyCode == 13){
+				var userId = $('#userId').val();
+				var adminPw = $('#adminPw').val();
+				var blank =  /\s/g;
+				
+				if(userId == "") {
+					alert("아이디를 입력하세요");
+					$('#userId').focus();
+					return false;
+				}else if(userId.length == 0 || !userId.trim()){
+		 			alert("연속적인 공백은 입력이 안됩니다");
+		 			$('#userId').focus();
+		 			return false;
+				}else if( userId.match(blank) || userId.length < 2){
+		 			alert("아이디에 공백이 있거나 두자리 미만의 이름을 입력하셨습니다!");
+		 			$('#userId').focus();
+		 			return false;	
+				}
+				
+				if(adminPw == "") {
+					alert("비밀번호를 입력하세요");
+					$("#adminPw").focus();
+					return false;
+				}
+				
+				/* if(adminPw == ) */
+			
+				document.form1.action = "${path}/web/researchList.do" 
+				document.form1.submit();
+			}
+		});
+	});
 </script>
 </html>

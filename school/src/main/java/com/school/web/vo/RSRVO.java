@@ -9,7 +9,7 @@ public class RSRVO {
 	private String surqSeq;
 	private String suriSeq;
 	private String suriNum;
-	private String description;
+	private String description; // suriTitle7
 	private String writer;
 	private String regName;
 	private Date regDate;
