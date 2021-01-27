@@ -294,7 +294,6 @@
 			var writer = $('#writer').val();
 			var regName = $('#regName').val();
 			var udtName = $('#udtName').val();
-
 			//문제 문항들 
 			var suriArray = [];
 			$('input[class="inp"]').each(function(i){
@@ -360,8 +359,8 @@
 					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
 					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
 					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q6 = $("</ul><br>");
-					/* var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>"); */
+					/* var q6 = $("</ul><br>"); */
+					var q6 = $("<input type='hidden' name='suriTitle' id='suriTitle' class='inp' style='width:400px;' maxlength='40'/></ul><br>");
 					$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 					$(".research").append(div);
 			}
@@ -376,8 +375,8 @@
 				var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
 				var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
 				var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q6 = $("</ul><br>");
-/* 				var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>"); */
+			/* 	var q6 = $("</ul><br>"); */
+				var q6 = $("<br><input type='hidden' name='suriTitle' id='suriTitle' class='inp' style='width:400px;' maxlength='40'/></ul><br>");
 				$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 				$(".research").append(div);
 			}

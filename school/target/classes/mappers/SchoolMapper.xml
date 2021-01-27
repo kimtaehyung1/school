@@ -6,24 +6,24 @@
 <mapper namespace="cafeteria">
 
 	<select id="loginCheck" resultType="String">
-		select * from tb_00_member
-		where USER_ID = #{userId}
-		and ADMIN_PW = #{adminPw}
+		SELECT * FROM TB_00_MEMBER
+		WHERE USER_ID = #{userId}
+		AND ADMIN_PW = #{adminPw}
 	</select>
 	<select id="memberInfo" resultType="com.school.web.vo.SchoolVO">
-		select
-		MEMBER_NAME as memberName,
-		USER_ID as userId,
-		ADMIN_YN as adminYn,
-		ADMIN_PW as adminPw
-		from tb_00_member
-		where USER_ID = #{userId} and ADMIN_PW = #{adminPw}
+		SELECT
+		MEMBER_NAME AS MEMBERNAME,
+		USER_ID AS USERID,
+		ADMIN_YN AS ADMINYN,
+		ADMIN_PW AS ADMINPW
+		FROM TB_00_MEMBER
+		WHERE USER_ID = #{userId} AND ADMIN_PW = #{adminPw}
 	</select>
 	<!-- 설문 리스트 -->
 	<select id="researchList" resultType="com.school.web.vo.RSIVO">
   <![CDATA[
-      select SURI_SEQ as suriSeq, SUR_TITLE as surTitle, SUR_SAT_DATE as surSatDate, SUR_END_DATE as surEndDate, CASE WHEN sur_end_date < to_char(sysdate, 'yyyymmdd') THEN '완료'
-       ELSE '진행중' END AS surIsend FROM TB_06_RSI order BY SURI_SEQ desc
+      SELECT SURI_SEQ AS SURISEQ, SUR_TITLE AS SURTITLE, SUR_SAT_DATE AS SURSATDATE, SUR_END_DATE AS SURENDDATE, CASE WHEN SUR_END_DATE < TO_CHAR(SYSDATE, 'YYYYMMDD') THEN '완료'
+       ELSE '진행중' END AS SURISEND FROM TB_06_RSI ORDER BY SURI_SEQ DESC
   ]]>
 	</select>
 	<!-- 글쓰기 저장  -->
@@ -31,8 +31,6 @@
 		insert into TB_06_RSI 
 		(
 			SURI_SEQ,
-			SUR_SEQ,
-			SURQ_SEQ,
 			SUR_TITLE,
 			QUE_CNT,
 			SUR_SAT_DATE,
@@ -43,8 +41,6 @@
 			SURI_TITLE4,
 			SURI_TITLE5,
 			SURI_TITLE6,
-			SURI_TITLE7,
-			SURI_NUM,
 			WRITER,
 			REG_NAME,
 			REG_DATE,
@@ -56,9 +52,7 @@
 			SURI_NUM4,
 			SURI_NUM5
 		) values (
-			(SELECT NVL(MAX(to_number(SURI_SEQ)+1),1)FROM TB_06_RSI),
-			(SELECT NVL(MAX(SUR_SEQ),1)+1 FROM TB_06_RS),
-			(SELECT NVL(MAX(SURQ_SEQ),1)+1 FROM TB_06_RSQ),
+			(SELECT NVL(MAX(to_number(SURI_SEQ)+1),1) FROM TB_06_RSI),
 			#{surTitle},
 			#{queCnt},
 			#{surSatDate}, 
@@ -69,40 +63,12 @@
 			#{suriTitle4},
 			#{suriTitle5},
 			#{suriTitle6},
-			#{suriTitle7},
-			'',
 			#{writer}, #{regName}, sysdate, #{udtName}, sysdate
 			,'1','2','3','4','5'
 		)
 	</insert>
-    <!-- 설문 상세 정보  -->
-    <select id="researchDetail" resultType="com.school.web.vo.RSIVO">
-    	select 
-    	SURI_SEQ as suriSeq,
-		SUR_TITLE as surTitle,
-		SUR_SAT_DATE as surSatDate,
-		SUR_END_DATE as surEndDate,
-		QUE_CNT as queCnt,
-		SURI_TITLE1 as suriTitle1,
-		SURI_TITLE2 as suriTitle2,
-		SURI_TITLE3 as suriTitle3,
-		SURI_TITLE4 as suriTitle4,
-		SURI_TITLE5 as suriTitle5,
-		SURI_TITLE6 as suriTitle6,
-		SURI_TITLE7 as suriTitle7,
-		SURI_NUM1 as suriNum1,
-		SURI_NUM2 as suriNum2,
-		SURI_NUM3 as suriNum3,
-		SURI_NUM4 as suriNum4,
-		SURI_NUM5 as suriNum5,
-		WRITER as writer,
-		REG_DATE as regDate
-		
-		from TB_06_RSI
-		where SURI_SEQ = #{suriSeq}
-    </select>
-    <update id="researchUpdate" parameterType="com.school.web.vo.RSIVO">
-    	update tb_06_rsi set
+    <update id="researchUpdate" parameterType="com.school.web.vo.RSIVO" >
+    	UPDATE TB_06_RSI SET
 		SUR_TITLE = #{surTitle},
 		SUR_SAT_DATE  = #{surSatDate},
 		SUR_END_DATE  = #{surEndDate},
@@ -113,41 +79,37 @@
 		SURI_TITLE4  = #{suriTitle4},
 		SURI_TITLE5  = #{suriTitle5},
 		SURI_TITLE6  = #{suriTitle6},
-		SURI_TITLE7  = #{suriTitle7},
 		SURI_NUM1  = '1',
 		SURI_NUM2  = '2',
 		SURI_NUM3  = '3',
 		SURI_NUM4  = '4',
 		SURI_NUM5  = '5',
-        writer = #{writer},
-        reg_name = #{regName},
-        reg_date = #{regDate},
-        udt_name = #{udtName},
-        udt_date = sysdate
+        WRITER = #{writer},
+        REG_NAME = #{regName},
+        REG_DATE = #{regDate},
+        UDT_NAME = #{udtName},
+        UDT_DATE = sysdate
 		
 		where SURI_SEQ = #{suriSeq}
     </update>
     <delete id="researchDelete" parameterType="com.school.web.vo.RSIVO">
-    	delete tb_06_rsi where suri_seq = #{suriSeq}
+    	DELETE TB_06_RSI WHERE SURI_SEQ = #{suriSeq}
     </delete>
     <select id="count" resultType="int">
-    	select count(*) from tb_00_member
-		where user_id = #{userId} and admin_pw = #{adminPw}
+    	SELECT COUNT(*) FROM TB_00_MEMBER
+		WHERE USER_ID = #{USERID} AND ADMIN_PW = #{adminPw}
     </select>
-    
     
     <!-- 상세저장 -->
     <insert id="insert" >
 	INSERT INTO TB_06_RSR (
-        SURR_SEQ, SUR_SEQ, SURQ_SEQ, SURI_SEQ, SURI_NUM, DESCRIPTION, WRITER,
+        SURR_SEQ, SURI_SEQ, SURI_NUM, DESCRIPTION, WRITER,
         REG_NAME, REG_DATE, UDT_NAME, UDT_DATE, SURQ_TITLE
 	   ) VALUES (
 	   (SELECT NVL(MAX(TO_NUMBER(SURR_SEQ)+1),1)FROM TB_06_RSR),
-	   (SELECT NVL(MAX(SUR_SEQ),1)+1 FROM TB_06_RS),
-	   (SELECT NVL(MAX(SURQ_SEQ),1)+1 FROM TB_06_RSQ),
-	   (SELECT NVL(MAX(SURI_SEQ),1)+1 FROM TB_06_RSI),
+	   #{suriSeq},
 	   #{suriNum},
-	   #{description} <!-- suriTitle7 -->,
+	   #{description} <!-- suriTitle7 사유-->,
 	   #{writer},
 	   #{regName},
 	   #{regDate},
@@ -156,4 +118,82 @@
 	   #{surqTitle}   
 	   )
     </insert>
+    <resultMap type="com.school.web.vo.RSIVO" id="rsiMap">
+    	<id column="SURI_SEQ" property="suriSeq"/>
+    	<id column="SUR_TITLE" property="surTitle"/>
+    	<id column="QUE_CNT" property="queCnt"/>
+    	<id column="SUR_SAT_DATE" property="surSatDate"/>
+    	<id column="SUR_END_DATE" property="surEndDate"/>
+    	<id column="SURI_TITLE1" property="suriTitle1"/>
+    	<id column="SURI_TITLE2" property="suriTitle2"/>
+    	<id column="SURI_TITLE3" property="suriTitle3"/>
+    	<id column="SURI_TITLE4" property="suriTitle4"/>
+    	<id column="SURI_TITLE5" property="suriTitle5"/>
+    	<id column="SURI_TITLE6" property="suriTitle6"/>
+    	<id column="SURI_TITLE7" property="suriTitle7"/>
+    	<id column="WRITER" property="writer"/>
+    	<id column="REG_NAME" property="regName"/>
+    	<id column="REG_DATE" property="regDate"/>
+    	<id column="UDT_NAME" property="udtName"/>
+    	<id column="SURI_NUM1" property="suriNum1"/>
+    	<id column="SURI_NUM2" property="suriNum2"/>
+    	<id column="SURI_NUM3" property="suriNum3"/>
+    	<id column="SURI_NUM4" property="suriNum4"/>
+    	<id column="SURI_NUM5" property="suriNum5"/>
+    	
+    	<association javaType="com.school.web.vo.RSRVO" property="rsrvo">
+    		<id column="SURR_SEQ" property="surrSeq"/>
+	    	<id column="SURI_SEQ" property="suriSeq"/>
+	    	<id column="SURI_NUM" property="suriNum"/>
+	    	<id column="DESCRIPTION" property="description"/>
+	    	<id column="WRITER" property="writer"/>
+	   		<id column="REG_NAME" property="regName"/>
+	    	<id column="REG_DATE" property="regDate"/>
+	    	<id column="UDT_NAME" property="udtName"/>
+	    	<id column="SURQ_TITLE" property="surqTitle"/>
+    	</association>
+    </resultMap>
+    <select id="researchDetail" resultMap="rsiMap" >
+ 		select 
+	    	A.SURI_SEQ,
+			A.SUR_TITLE,
+			A.SUR_SAT_DATE,
+			A.SUR_END_DATE,
+			A.QUE_CNT,
+			A.SURI_TITLE1,
+			A.SURI_TITLE2,
+			A.SURI_TITLE3,
+			A.SURI_TITLE4,
+			A.SURI_TITLE5,
+			A.SURI_TITLE6,
+			A.SURI_TITLE7,
+       		b.DESCRIPTION,
+			A.SURI_NUM1,
+			A.SURI_NUM2,
+			A.SURI_NUM3,
+			A.SURI_NUM4,
+			A.SURI_NUM5,
+			A.WRITER,
+			A.REG_DATE,
+			A.REG_NAME,
+			A.UDT_NAME
+		FROM TB_06_RSI A , tb_06_rsr b
+		WHERE a.suri_seq = b.suri_seq
+      and A.SURI_SEQ = #{suriSeq}
+    </select>
+    
+    <select id="result"  resultMap="rsiMap"> 
+    	SELECT  
+    		A.SURI_SEQ,
+			A.SUR_TITLE,
+			B.SURQ_TITLE,
+			B.SURI_NUM,
+			A.SURI_TITLE1,
+			B.DESCRIPTION ,
+			B.REG_NAME,
+			B.REG_DATE
+		FROM TB_06_RSI A , TB_06_RSR B 
+		WHERE A.SURI_SEQ = B.SURI_SEQ 
+		AND	A.SURI_SEQ = #{suriSeq}
+    </select>
 </mapper> 

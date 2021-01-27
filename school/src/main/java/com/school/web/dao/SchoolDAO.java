@@ -1,6 +1,5 @@
 package com.school.web.dao;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +41,7 @@ public class SchoolDAO {
 	}
 
 	public RSIVO researchDetail(String suriSeq) {
-		RSIVO rsivo = sqlSession.selectOne("cafeteria.researchDetail", suriSeq);
-		return rsivo;	
+		return sqlSession.selectOne("cafeteria.researchDetail", suriSeq);
 	}
 	
 	public int update(RSIVO rsivo) {
@@ -60,5 +58,9 @@ public class SchoolDAO {
 	
 	public int insert(RSRVO rsrvo) {
 		return sqlSession.insert("cafeteria.insert", rsrvo);
+	}
+	
+	public List<RSIVO> result(String suriSeq) {
+		return sqlSession.selectList("cafeteria.result", suriSeq);
 	}
 }

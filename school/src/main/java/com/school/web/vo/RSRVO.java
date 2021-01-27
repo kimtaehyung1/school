@@ -5,8 +5,6 @@ import java.util.Date;
 public class RSRVO {
 
 	private String surrSeq;
-	private String surSeq;
-	private String surqSeq;
 	private String suriSeq;
 	private String suriNum;
 	private String description; // suriTitle7
@@ -21,18 +19,6 @@ public class RSRVO {
 	}
 	public void setSurrSeq(String surrSeq) {
 		this.surrSeq = surrSeq;
-	}
-	public String getSurSeq() {
-		return surSeq;
-	}
-	public void setSurSeq(String surSeq) {
-		this.surSeq = surSeq;
-	}
-	public String getSurqSeq() {
-		return surqSeq;
-	}
-	public void setSurqSeq(String surqSeq) {
-		this.surqSeq = surqSeq;
 	}
 	public String getSuriSeq() {
 		return suriSeq;
@@ -90,7 +76,7 @@ public class RSRVO {
 	}
 	@Override
 	public String toString() {
-		return "RSRVO [surrSeq=" + surrSeq + ", surSeq=" + surSeq + ", surqSeq=" + surqSeq + ", suriSeq=" + suriSeq
+		return "RSRVO [surrSeq=" + surrSeq + ", suriSeq=" + suriSeq
 				+ ", suriNum=" + suriNum + ", description=" + description + ", writer=" + writer + ", regName="
 				+ regName + ", regDate=" + regDate + ", udtName=" + udtName + ", udtDate=" + udtDate + ", surqTitle="
 				+ surqTitle + "]";

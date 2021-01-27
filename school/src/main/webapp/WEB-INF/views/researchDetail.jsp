@@ -290,8 +290,8 @@
 												var="surEndDate1" pattern="yyyyMMdd" scope="page" /> <fmt:formatDate
 												value="${surEndDate1 }" pattern="yyyy-MM-dd" /></td>
 										<th>결과확인</th>
-										<td class="tl"><img
-											src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td>
+										<td class="tl"><a href="javascript:result(${vo.suriSeq })">
+											<img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
 									</tr>
 									<tr>
 										<th>문항수</th>
@@ -304,11 +304,11 @@
 												<c:forEach var="vo" items="${list01 }" varStatus="status">
 													<p>${status.count }. ${vo }</p>
 												 <ul class="test-li">
-														<li><input type="checkbox" value="1" name="chk[]" id="chk" class="check"/> ${list02[status.index] }</li> 
-														<li><input type="checkbox" value="2" name="chk[]" id="chk" class="check"/> ${list03[status.index] }</li>
-														<li><input type="checkbox" value="3" name="chk[]" id="chk" class="check"/> ${list04[status.index] }</li>
-														<li><input type="checkbox" value="4" name="chk[]" id="chk" class="check"/> ${list05[status.index] }</li>
-														<li><input type="checkbox" value="5" name="chk[]" id="chk" class="check"/> ${list06[status.index] }</li>
+														<li><input type="checkbox" value="1" name="chk" id="chk" class="chk"/> ${list02[status.index] }</li> 
+														<li><input type="checkbox" value="2" name="chk" id="chk" class="chk"/> ${list03[status.index] }</li>
+														<li><input type="checkbox" value="3" name="chk" id="chk" class="chk"/> ${list04[status.index] }</li>
+														<li><input type="checkbox" value="4" name="chk" id="chk" class="chk"/> ${list05[status.index] }</li>
+														<li><input type="checkbox" value="5" name="chk" id="chk" class="chk"/> ${list06[status.index] }</li>
 														<li>선택사유&nbsp;&nbsp;&nbsp; <input type="text" value="${list07[status.index] }" id="list07" class="inp" style="width: 600px;" />
 														</li>
 														<br />
@@ -320,7 +320,7 @@
 										    <input type="hidden" id="suriSeq" name="suriSeq" value="${vo.suriSeq}" />
 						              		<input type="hidden" id="regDate" name="regDate" value="${vo.regDate }" />
 						               		<input type="hidden" id="writer" name="writer" value="${vo.writer }"/>
-						               		<input type="hidden" id="regName" name="regName" value="${vo.writer}"/>
+						               		<input type="hidden" id="regName" name="regName" value="${sessionScope.memberName }"/>
 						               		<input type="hidden" id="udtName" name="udtName" value="${sessionScope.memberName }"/>
 									</tr>
 									<!--   <tr>
@@ -338,10 +338,10 @@
 							<a href="${path }/web/researchList.do" class="wte_r">목록</a></span> 
 								<c:if test="${sessionScope.adminYn == 'Y' }">
 									<span class="wte_l"><a href="javascript:update(${vo.suriSeq })" class="wte_r">수정</a></span>
-									<span class="wte_l"><a href="#" class="wte_r" id="save">저장</a></span>
 									<span class="wte_l"><a href="javascript:chk()" class="wte_r">삭제</a></span>
 								</c:if> 
 							<!-- 	<span class="wte_l"><a href="#" class="wte_r">결과보기</a></span>  -->
+								<span class="wte_l"><a href="#" class="wte_r" id="save">저장</a></span>
 								<span class="wte_l"><a href="#" class="wte_r">사유전체보기</a></span>
 								<span class="wte_l"><a href="javascript:back();" class="wte_r">취소</a></span>
 							</span>
@@ -380,13 +380,18 @@
 
 <script type="text/javascript">
 
+	function result(seq) {
+		 window.open("researchPopup.do?suriSeq="+seq,
+					"researchPopup","width=700,height=350");
+	}
+
 	function chk() {
 		
 		var suriSeq = '${vo.suriSeq}';
 		var userId = '${sessionScope.userId}';
 		
 		 window.open("passChk.do?suriSeq="+suriSeq+"&userId="+userId,
-				"passChk","width=500,height=200");
+				"passChk","width=700,height=350");
 	}
 
 	function back() {
@@ -395,18 +400,17 @@
 
 	$(document).ready(function(){
 		$("#save").click(function(){
-					
+		
+			var suriSeq = '${vo.suriSeq}'; // 문제SEQ
 			var surTitle = '${vo.surTitle }'; //제목 
 			var surSatDate = '${vo.surSatDate }'; //시작일		
 			var surEndDate = '${vo.surEndDate }';	//종료일
 			var queCnt = '${vo.queCnt }'; //항목수
-			
 			var writer = '${vo.writer}';
-			var regName = '${vo.regName}';
-			var udtName = '${vo.udtName}';
+			var regName = $("#regName").val();
+			var udtName = $("#udtName").val();
 			var regDate = '${vo.regDate}';
 			
-			alert(writer);
 			var date = new Date(regDate);
 		 	var year = date.getFullYear().toString().substring(2, 4);              //yyyy
 		    var month = (1 + date.getMonth());          //M
@@ -414,31 +418,26 @@
 		    var day = date.getDate();                   //d
 		    day = day >= 10 ? day : '0' + day;
 		    var regDateString = year + '/' + month + '/' + day;//day 두자리로 저장 
-			
- 			// 문제 번호 
-			var suriNum1 = '${vo.suriNum1 }';
-			var suriNum2 = '${vo.suriNum2 }';
-			var suriNum3 = '${vo.suriNum3 }';
-			var suriNum4 = '${vo.suriNum4 }';
-			var suriNum5 = '${vo.suriNum5 }'; 
-			    
+					    
 			//문제 타이틀 
 			var suriTitle1 = '${list01}';
-
 			
 			// [2,3] ==이 형태로 마
-			//항목 체크 번호 
-		 	var suriNum = new Array();
-			var cnt = 0;
-			var chkbox = $(".check");
-			for(i=0; i< chkbox.length; i++) {
-				if(chkbox[i].checked == true) {
-					suriNum[cnt] = chkbox[i].value;
-					cnt++;
-				}
+			
+			var send_array = Array();
+			var send_cnt = 0;
+			var arr = [];
+			var chkbox = $(".chk");
+			
+			for(i=0;i<chkbox.length;i++) {
+			    if (chkbox[i].checked == true){
+			        send_array[send_cnt] = chkbox[i].value;
+			        send_cnt++;
+			        arr.push(chkbox[i].value);
+			    }
 			}
 			
-
+			var chkArr = Array();
 
 			//항목 타이틀 
 		 	var suriTitle2 = '${list02}';
@@ -453,42 +452,44 @@
 				suriTitle7.push($(this).val());
 			});
 			
-			var param ={
+			var param = {
+					"suriSeq" : suriSeq,
 					"surTitle": surTitle,
 					"surSatDate": surSatDate,
 					"surEndDate": surEndDate,
 					"queCnt": queCnt,
 					"writer": writer,
 					"regName": regName,
-					"regDate": regDateString,
+			 		"regDate": regDateString,
 					"udtName": udtName,
-					"suriNum1": suriNum1,
-					"suriNum2": suriNum2,
-					"suriNum3": suriNum3,
-					"suriNum4": suriNum4,
-					"suriNum5": suriNum5,
 					"suriTitle1": suriTitle1,
-					"suriNum": suriNum,
+					"suriNum": '['+arr.toString()+']',
 					"suriTitle2": suriTitle2,
 					"suriTitle3": suriTitle3,
 					"suriTitle4": suriTitle4,
 					"suriTitle5": suriTitle5,
 					"suriTitle6": suriTitle6,
-					"suriTitle7": suriTitle7
+					"description": '['+suriTitle7.toString()+']'
 			}
 			
-	/* 		 $.ajax({
-				url: "insert.do",
-				dataType: "json",
-				type: "post",
-				data: param,
-				success: function(){
-					alert("성공");
-				}, error: function(){
-					alert('실패');
-				}
-			});  */
-			
+			if( $(":checkbox[name='chk']:checked").length == 0 ){
+				alert("설문 항목을 하나이상 체크해주세요.");
+				return; //체크 한번 하면 두번은 못하게 막기 
+				
+			} else {
+		 		$.ajax({
+					url: "researchConfirm.do",
+					dataType: "html",
+					type: "post",
+					data: param,
+					success: function(){
+						alert("저장 되었습니다.");
+						window.location.reload();
+					}, error: function(request, status, error){
+						alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+					}
+				}); 
+			}
 		});
 	});
 	

@@ -214,18 +214,18 @@
 	               <td colspan="6" class="tl">
 	               	    <div class="research" >
 	             	   <c:forEach var="vo" items="${list01 }" varStatus="status">
-													<p>${status.count }. <input type="text" value="${vo }" class="inp" maxlength="50"/></p>
-												 <ul class="test-li">
-														<li><input type="text" value="${list02[status.index] }" class="inp" maxlength="50"/></li> 
-														<li><input type="text" value="${list03[status.index] }" class="inp" maxlength="50"/></li> 
-														<li><input type="text" value="${list04[status.index] }" class="inp" maxlength="50"/></li> 
-														<li><input type="text" value="${list05[status.index] }" class="inp" maxlength="50"/></li> 
-														<li><input type="text" value="${list06[status.index] }" class="inp" maxlength="50"/></li> 
-														<li>선택사유&nbsp;&nbsp;&nbsp; <input type="text" value="${list07[status.index] }" class="inp" maxlength="40" style="width: 600px;" />
-														</li>
-														<br />
-													</ul>
-												</c:forEach>
+							<p>${status.count }. <input type="text" value="${vo }" class="inp" maxlength="50"/></p>
+						 <ul class="test-li">
+								<li><input type="text" value="${list02[status.index] }" class="inp" maxlength="50"/></li> 
+								<li><input type="text" value="${list03[status.index] }" class="inp" maxlength="50"/></li> 
+								<li><input type="text" value="${list04[status.index] }" class="inp" maxlength="50"/></li> 
+								<li><input type="text" value="${list05[status.index] }" class="inp" maxlength="50"/></li> 
+								<li><input type="text" value="${list06[status.index] }" class="inp" maxlength="50"/></li> 
+								<li><input type="hidden" value="${list07[status.index] }" class="inp" maxlength="40" style="width: 600px;" />
+								</li>
+								<br />
+							</ul>
+						</c:forEach>
 						</div>
 	               </td>
 	              		<input type="hidden" id="suriSeq" name="suriSeq" value="${vo.suriSeq}" />
@@ -310,6 +310,8 @@
 				suriArray.push($(this).val());
 			});
 			
+			alert(suriArray);
+			
 			if(surTitle == "")  {
 				alert("제목을 입력하세요.");
 				$("#surTitle").focus();
@@ -364,7 +366,7 @@
 
 	  function fn_selectcnt(queCnt){
 			selectCnt = queCnt.replace("개","");
-			$(".research").empty();
+			$(".research").empty(); 
 				for(var i =1; i<=selectCnt ;i++){
 						var div = $("<div/>");
 						var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='suriTitle1'  class='inp' maxlength='50'></input></p>");
@@ -373,7 +375,7 @@
 						var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
 						var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
 						var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-						var q6 = $("<li>선택사유&nbsp;&nbsp;&nbsp; <input type='text' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>");
+						var q6 = $("<li><input type='hidden' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>");
 						$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 						$(".research").append(div);
 				}

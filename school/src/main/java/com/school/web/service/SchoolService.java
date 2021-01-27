@@ -49,8 +49,8 @@ public class SchoolService {
 	}
 	
 	public RSIVO researchDetail(String suriSeq) {
-		RSIVO rsivo = schoolDao.researchDetail(suriSeq);
-		return rsivo;
+		 return schoolDao.researchDetail(suriSeq);
+	
 	}
 
 	public int update(RSIVO rsivo) {
@@ -66,7 +66,10 @@ public class SchoolService {
 	}
 	
 	public int insert(RSRVO rsrvo) {
-		
 		return schoolDao.insert(rsrvo);
+	}
+	
+	public List<RSIVO>  result(String suriSeq) {
+		return schoolDao.result(suriSeq);
 	}
 }

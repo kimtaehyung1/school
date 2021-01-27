@@ -1,6 +1,5 @@
 package com.school.web.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,12 +24,11 @@ import com.school.web.vo.RSIVO;
 import com.school.web.vo.RSRVO;
 import com.school.web.vo.SchoolVO;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 @Controller
 public class SchoolController extends HttpServlet {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1778052189418196350L;
 
 	@Autowired
@@ -118,7 +116,6 @@ public class SchoolController extends HttpServlet {
 		ArrayList<String> suriTitle5 = new ArrayList<String>();
 		ArrayList<String> suriTitle6 = new ArrayList<String>();
 		ArrayList<String> suriTitle7 = new ArrayList<String>();
-		
 			
 			for(int i=0; i<suriList.length; i++) {
 				if(i % 7 == 0) {
@@ -142,7 +139,6 @@ public class SchoolController extends HttpServlet {
 				if(i % 7 == 0 + 6) {
 					suriTitle7.add(suriList[i]);
 				}
-			
 			}
 			
 			rsivo.setSuriTitle1(suriTitle1.toString());
@@ -151,19 +147,19 @@ public class SchoolController extends HttpServlet {
 			rsivo.setSuriTitle4(suriTitle4.toString());
 			rsivo.setSuriTitle5(suriTitle5.toString());
 			rsivo.setSuriTitle6(suriTitle6.toString());
-			rsivo.setSuriTitle7(suriTitle7.toString());
+			rsivo.setSuriTitle7("");
 			
 			schoolService.create(rsivo);
             return "redirect:researchList";
 	}
 	
 	@RequestMapping(value="researchDetail.do", method = RequestMethod.GET)
-	public String detail(String suriSeq, Model model, SchoolVO vo, HttpSession session) throws ParseException {
+	public ModelAndView detail(String suriSeq, RSRVO rsrvo, Model model, SchoolVO vo, HttpSession session) {
 
-		
-		RSIVO rsivo = schoolService.researchDetail(suriSeq);
-		model.addAttribute("vo", rsivo);
-		
+		RSIVO rsivo= schoolService.researchDetail(suriSeq);
+
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("vo", rsivo);
 		ArrayList<String> list01 = new ArrayList<String>();
 		ArrayList<String> list02 = new ArrayList<String>();
 		ArrayList<String> list03 = new ArrayList<String>();
@@ -178,7 +174,7 @@ public class SchoolController extends HttpServlet {
 		String[] col04 = rsivo.getSuriTitle4().substring(1, rsivo.getSuriTitle4().length()-1).split(",");
 		String[] col05 = rsivo.getSuriTitle5().substring(1, rsivo.getSuriTitle5().length()-1).split(",");
 		String[] col06 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
-		String[] col07 = rsivo.getSuriTitle7().substring(1, rsivo.getSuriTitle7().length()-1).split(",");
+//		String[] col07 = rsivo.getRsrvo().getDescription().substring(1, rsivo.getRsrvo().getDescription().length()-1).split(",");
 		
 		
 		for(int i=0; i< col01.length; i++) {
@@ -188,7 +184,7 @@ public class SchoolController extends HttpServlet {
 			list04.add(col04[i]);
 			list05.add(col05[i]);
 			list06.add(col06[i]);
-			list07.add(col07[i]);
+//			list07.add(col07[i]);
 		}
 		
 		model.addAttribute("list01", list01);
@@ -197,9 +193,9 @@ public class SchoolController extends HttpServlet {
 		model.addAttribute("list04", list04);
 		model.addAttribute("list05", list05);
 		model.addAttribute("list06", list06);
-		model.addAttribute("list07", list07);
+//		model.addAttribute("list07", list07);
 		
-		return "researchDetail";
+		return mav ;
 	}
 	
 	@RequestMapping(value="researchDetail.do", method = RequestMethod.POST)
@@ -222,8 +218,7 @@ public class SchoolController extends HttpServlet {
 		String[] col04 = rsivo.getSuriTitle4().substring(1, rsivo.getSuriTitle4().length()-1).split(",");
 		String[] col05 = rsivo.getSuriTitle5().substring(1, rsivo.getSuriTitle5().length()-1).split(",");
 		String[] col06 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
-		String[] col07 = rsivo.getSuriTitle7().substring(1, rsivo.getSuriTitle7().length()-1).split(",");
-		
+		String[] col07 = rsivo.getRsrvo().getDescription().substring(1, rsivo.getRsrvo().getDescription().length()-1).split(",");
 		
 		for(int i=0; i< col01.length; i++) {
 			list01.add(col01[i]);
@@ -242,22 +237,14 @@ public class SchoolController extends HttpServlet {
 		model.addAttribute("list05", list05);
 		model.addAttribute("list06", list06);
 		model.addAttribute("list07", list07);
-		
-		
-		
-		
-		
-		
 		return "researchDetail";
-		
 	}
 
 	@RequestMapping(value="researchUpdate.do", method = RequestMethod.GET)
  	public String update(String suriSeq, Model model) {
 		
-		RSIVO vo = schoolService.researchDetail(suriSeq);
-		
-		model.addAttribute("vo", vo);
+		RSIVO rsivo = schoolService.researchDetail(suriSeq);
+		model.addAttribute("vo", rsivo);
 		
 		ArrayList<String> list01 = new ArrayList<String>();
 		ArrayList<String> list02 = new ArrayList<String>();
@@ -265,25 +252,24 @@ public class SchoolController extends HttpServlet {
 		ArrayList<String> list04 = new ArrayList<String>();
 		ArrayList<String> list05 = new ArrayList<String>();
 		ArrayList<String> list06 = new ArrayList<String>();
-		ArrayList<String> list07 = new ArrayList<String>();
+//		ArrayList<String> list07 = new ArrayList<String>();
 		
-		String[] col01 = vo.getSuriTitle1().substring(1, vo.getSuriTitle1().length()-1).split(",");
-		String[] col02 = vo.getSuriTitle2().substring(1, vo.getSuriTitle2().length()-1).split(",");
-		String[] col03 = vo.getSuriTitle3().substring(1, vo.getSuriTitle3().length()-1).split(",");
-		String[] col04 = vo.getSuriTitle4().substring(1, vo.getSuriTitle4().length()-1).split(",");
-		String[] col05 = vo.getSuriTitle5().substring(1, vo.getSuriTitle5().length()-1).split(",");
-		String[] col06 = vo.getSuriTitle6().substring(1, vo.getSuriTitle6().length()-1).split(",");
-		String[] col07 = vo.getSuriTitle7().substring(1, vo.getSuriTitle7().length()-1).split(",");
+		String[] col01 = rsivo.getSuriTitle1().substring(1, rsivo.getSuriTitle1().length()-1).split(",");
+		String[] col02 = rsivo.getSuriTitle2().substring(1, rsivo.getSuriTitle2().length()-1).split(",");
+		String[] col03 = rsivo.getSuriTitle3().substring(1, rsivo.getSuriTitle3().length()-1).split(",");
+		String[] col04 = rsivo.getSuriTitle4().substring(1, rsivo.getSuriTitle4().length()-1).split(",");
+		String[] col05 = rsivo.getSuriTitle5().substring(1, rsivo.getSuriTitle5().length()-1).split(",");
+		String[] col06 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
+//		String[] col07 = rsivo.getSuriTitle7().substring(1, rsivo.getSuriTitle7().length()-1).split(",");
 		
-		for(int i=0; i< col01.length; i++) {
+		for(int i=0; i< col01.length-1; i++) {
 			list01.add(col01[i]);
 			list02.add(col02[i]);
 			list03.add(col03[i]);
 			list04.add(col04[i]);
 			list05.add(col05[i]);
 			list06.add(col06[i]);
-			list06.add(col06[i]);
-			list07.add(col07[i]);
+//			list07.add(col07[i]);
 		}
 		
 		model.addAttribute("list01", list01);
@@ -292,14 +278,12 @@ public class SchoolController extends HttpServlet {
 		model.addAttribute("list04", list04);
 		model.addAttribute("list05", list05);
 		model.addAttribute("list06", list06);
-		model.addAttribute("list07", list07);
-		
-
+//		model.addAttribute("list07", list07);
 		return "researchUpdate";
 	}
 	
 	@RequestMapping(value="researchUpdate.do", method = RequestMethod.POST)
-	public String update(RSIVO rsivo,
+	public String update(RSIVO rsivo, RSRVO rsrvo,
 			@RequestParam(value = "suriSeq") String suriSeq,
 			@RequestParam(value = "surTitle") String surTitle,
 			@RequestParam(value = "queCnt") String queCnt,
@@ -318,30 +302,29 @@ public class SchoolController extends HttpServlet {
 		ArrayList<String> suriTitle5 = new ArrayList<String>();
 		ArrayList<String> suriTitle6 = new ArrayList<String>();
 		ArrayList<String> suriTitle7 = new ArrayList<String>();
-		
 			
 		for(int i=0; i<suriList.length; i++) {
-			if(i % 7 == 0) {
+			if(i % 6 == 0) {
 				suriTitle1.add(suriList[i]);
 			}
-			if(i % 7 == 0 + 1) {
+			if(i % 6 == 0 + 1) {
 				suriTitle2.add(suriList[i]);
 			}
-			if(i % 7 == 0 + 2) {
+			if(i % 6 == 0 + 2) {
 				suriTitle3.add(suriList[i]);
 			}
-			if(i % 7 == 0 + 3) {
+			if(i % 6 == 0 + 3) {
 				suriTitle4.add(suriList[i]);
 			}
-			if(i % 7 == 0 + 4) {
+			if(i % 6 == 0 + 4) {
 				suriTitle5.add(suriList[i]);
 			}
-			if(i % 7 == 0 + 5) {
+			if(i % 6 == 0 + 5) {
 				suriTitle6.add(suriList[i]);
 			}
-			if(i % 7 == 0 + 6) {
-				suriTitle7.add(suriList[i]);
-			}
+//			if(i % 6 == 0 + 6) {
+//				suriTitle7.add(suriList[i]);
+//			}
 		}
 		rsivo.setSuriTitle1(suriTitle1.toString());
 		rsivo.setSuriTitle2(suriTitle2.toString());
@@ -349,9 +332,11 @@ public class SchoolController extends HttpServlet {
 		rsivo.setSuriTitle4(suriTitle4.toString());
 		rsivo.setSuriTitle5(suriTitle5.toString());
 		rsivo.setSuriTitle6(suriTitle6.toString());
-		rsivo.setSuriTitle7(suriTitle7.toString());
+//		rsivo.setSuriTitle7(suriTitle7.toString());
 		
+	
 		schoolService.update(rsivo);
+		System.out.println(rsrvo);
 		return "researchUpdate";
 	}
 
@@ -382,33 +367,72 @@ public class SchoolController extends HttpServlet {
 		return map;
 	}
 
-	@RequestMapping(value="insert.do", method = RequestMethod.POST)
-	public String insert(RSIVO rsivo, RSRVO rsrvo,
+	@RequestMapping(value="researchConfirm.do", method = RequestMethod.GET)
+	public String confirm() {
+		return "researchConfirm";
+	}
+	@RequestMapping(value="researchConfirm.do", method = RequestMethod.POST)
+	public String confirm(RSIVO rsivo, RSRVO rsrvo,
+				
+			@RequestParam(value = "suriSeq") String suriSeq,
 			@RequestParam(value = "surTitle") String surTitle,
 			@RequestParam(value = "surSatDate") String surSatDate,
 			@RequestParam(value = "surEndDate") String surEndDate,
 			@RequestParam(value = "queCnt") String queCnt,
-			@RequestParam(value = "suriNum1") String suriNum1,
-			@RequestParam(value = "suriNum2") String suriNum2,
-			@RequestParam(value = "suriNum3") String suriNum3,
-			@RequestParam(value = "suriNum4") String suriNum4,
-			@RequestParam(value = "suriNum5") String suriNum5,
-			@RequestParam(value = "suriNum[]") String[] suriNum, 
+			@RequestParam(value = "suriNum") String suriNum, 
 			@RequestParam(value = "suriTitle1") String suriTitle1,
 			@RequestParam(value = "suriTitle2") String suriTitle2,
 			@RequestParam(value = "suriTitle3") String suriTitle3,
 			@RequestParam(value = "suriTitle4") String suriTitle4,
 			@RequestParam(value = "suriTitle5") String suriTitle5,
 			@RequestParam(value = "suriTitle6") String suriTitle6,
-			@RequestParam(value = "suriTitle7") String suriTitle7,
+			@RequestParam(value = "description") String description,
 			@RequestParam(value = "writer") String writer,
 			@RequestParam(value = "regName") String regName, 
 			@RequestParam(value = "udtName") String udtName
-			
 			) {
 		
-		System.out.println(surTitle);
-		
-		return "insert";
+		rsrvo.setSurqTitle(suriTitle1);
+		schoolService.insert(rsrvo);
+		System.out.println(rsrvo);
+		return "researchConfirm";
 	}
+
+	@RequestMapping(value="researchPopup.do", method = RequestMethod.GET)
+	public String resultPopup(String suriSeq, Model model) {
+		
+		List<RSIVO> list = schoolService.result(suriSeq);
+		System.out.println(list);
+		
+		model.addAttribute("rsivo",list.get(0));
+
+		ArrayList<String> qt = new ArrayList<String>();
+		
+		
+		for(int i=0; i<list.size(); i++) {
+			
+			String[] col = list.get(i).getRsrvo().getSurqTitle().substring(1, list.get(i).getRsrvo().getSurqTitle().length()-1).split(",");
+		
+			for(int j=0; j< col.length; j++) {
+				qt.add(col[i]);
+			}
+		}
+		
+		model.addAttribute("surqTitle", qt);
+		
+
+
+
+		JSONArray jArray = new JSONArray();
+		for(int i=0; i<list.size(); i++) {
+			JSONObject json = new JSONObject();
+//			json.put("category", qt);
+		}
+
+		
+		
+		
+		return "researchPopup";
+	}
+
 }
