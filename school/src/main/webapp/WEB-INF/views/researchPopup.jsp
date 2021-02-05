@@ -12,21 +12,8 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
 <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
 <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/material.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/lang/de_DE.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/geodata/germanyLow.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/fonts/notosans-sc.js"></script>
-<script type="text/javascript">
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
 
-
-$(document).ready(function(){
-	$("#close").click(function(e){
-		  e.preventDefault();
-		  window.close();
-	});
-});
-
-</script>
 </head>
 <body>
 	<!-- w100% h545px -->
@@ -34,14 +21,9 @@ $(document).ready(function(){
 	  <div class="pop_box">
 	  	<h1>결과보기</h1>
 	    <div class="pop_list">
-	    	<h2>${rsivo.surTitle }</h2>
-	    	
-	   <c:forEach items="${surqTitle}" var="vo">
-	        <div>
-	        	<p>${vo }</p>
-	        </div>
-	        
-	    	</c:forEach>
+	    	<h2>${surTitle }</h2>
+	    
+	   	 <div id="chartdiv"></div>
 	    </div>
 		<p class="pt20"></p>
 	    <div class="pop_btn">
@@ -50,4 +32,101 @@ $(document).ready(function(){
 	  </div>
 </div>
 </body>
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		$("#close").click(function(e){
+			  e.preventDefault();
+			  window.close();
+		});
+	});
+
+	var list = '${list}';
+	var cnt = '${queCnt}';
+	var list = JSON.parse(list); 
+
+  		 	var num100 = list[0].nList[0];
+  		    var num101 = list[0].nList[1];
+			var num102 = list[0].nList[2];
+			var num103 = list[0].nList[3];
+			var num104 = list[0].nList[4]; 
+			        
+			var num200 = list[1].nList[0];
+	 		var num201 = list[1].nList[1];
+			var num202 = list[1].nList[2];
+			var num203 = list[1].nList[3];
+			var num204 = list[1].nList[4];
+			      
+			var num300 = list[2].nList[0];
+		 	var num301 = list[2].nList[1];
+			var num302 = list[2].nList[2];	
+			var num303 = list[2].nList[3];	
+			var num304 = list[2].nList[4];	  
+
+	am4core.useTheme(am4themes_animated);
+	// Create chart instance
+	var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+	// Add data
+
+	for(var i in list){
+		var arr = list[i].surqTitle.split(",");
+		
+	}
+	
+	for(var i=0; i<list.length; i++){
+		for(var j=0; j<5; j++){
+			var num = list[i].nList[j];
+		}
+		
+	
+		chart.data = [
+			{ "category": arr[0], "value1": num100, "value2": num200, "value3": num300 }, 
+		 	{ "category": arr[1], "value1": num101, "value2": num201, "value3": num301 },
+	 		{ "category": arr[2], "value1": num102, "value2": num202, "value3": num302 },
+	 		{ "category": arr[3], "value1": num103, "value2": num203, "value3": num303 },
+	 		{ "category": arr[4], "value1": num104, "value2": num204, "value3": num304 }
+
+	 		
+	 	]; 
+	}			
+	
+	// Create axes
+ /* 	var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+	dateAxis.renderer.minGridDistance = 20;
+	dateAxis.renderer.grid.template.location = 0.5; */
+	
+	var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+	categoryAxis.dataFields.category = "category";
+	categoryAxis.renderer.grid.template.location = 0;
+	categoryAxis.renderer.minGridDistance = 20;
+
+
+	var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+	valueAxis.gridAlpha = 0; 
+	// Create series
+	function createSeries(field, name) {
+	  var series = chart.series.push(new am4charts.LineSeries());
+	  series.dataFields.valueY = field;
+	  series.dataFields.categoryX = "category";
+	  series.name = name;
+	  series.tooltipText = "{valueY}[/]";
+	  series.strokeWidth = 2;
+	  
+/* 	  series.smoothing = "monotoneX"; */
+	  
+	  var bullet = series.bullets.push(new am4charts.CircleBullet());
+	  bullet.circle.stroke = am4core.color("#fff");
+	  bullet.circle.strokeWidth = 2;
+	}
+	 
+ 	/* createSeries("value",  "0#0");   
+	createSeries("value2",  "0#0");    
+	createSeries("value",  "0#0");  */ 
+ 	 for(var i=1; i<list.length+1; i++){ //다시 정비 
+ 		createSeries("value"+i,  i+"#"+i); 
+ 	} 
+	chart.legend = new am4charts.Legend();
+	chart.cursor = new am4charts.XYCursor();
+</script>
 </html>

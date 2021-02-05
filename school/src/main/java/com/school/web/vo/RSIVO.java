@@ -32,14 +32,6 @@ public class RSIVO {
 	
 	private RSRVO rsrvo;
 
-	public String getSuriTitle7() {
-		return suriTitle7;
-	}
-
-	public void setSuriTitle7(String suriTitle7) {
-		this.suriTitle7 = suriTitle7;
-	}
-
 	public String getSuriSeq() {
 		return suriSeq;
 	}
@@ -126,6 +118,14 @@ public class RSIVO {
 
 	public void setSuriTitle6(String suriTitle6) {
 		this.suriTitle6 = suriTitle6;
+	}
+
+	public String getSuriTitle7() {
+		return suriTitle7;
+	}
+
+	public void setSuriTitle7(String suriTitle7) {
+		this.suriTitle7 = suriTitle7;
 	}
 
 	public String getWriter() {
@@ -229,10 +229,11 @@ public class RSIVO {
 		return "RSIVO [suriSeq=" + suriSeq + ", surTitle=" + surTitle + ", queCnt=" + queCnt + ", surSatDate="
 				+ surSatDate + ", surEndDate=" + surEndDate + ", suriTitle1=" + suriTitle1 + ", suriTitle2="
 				+ suriTitle2 + ", suriTitle3=" + suriTitle3 + ", suriTitle4=" + suriTitle4 + ", suriTitle5="
-				+ suriTitle5 + ", suriTitle6=" + suriTitle6 + ", writer=" + writer
+				+ suriTitle5 + ", suriTitle6=" + suriTitle6 + ", suriTitle7=" + suriTitle7 + ", writer=" + writer
 				+ ", regName=" + regName + ", regDate=" + regDate + ", udtName=" + udtName + ", udtDate=" + udtDate
 				+ ", suriNum1=" + suriNum1 + ", suriNum2=" + suriNum2 + ", suriNum3=" + suriNum3 + ", suriNum4="
 				+ suriNum4 + ", suriNum5=" + suriNum5 + ", surIsend=" + surIsend + ", rsrvo=" + rsrvo + "]";
 	}
+
 	
 }

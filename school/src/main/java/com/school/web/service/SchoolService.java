@@ -69,7 +69,7 @@ public class SchoolService {
 		return schoolDao.insert(rsrvo);
 	}
 	
-	public List<RSIVO>  result(String suriSeq) {
+	public List result(String suriSeq) {
 		return schoolDao.result(suriSeq);
 	}
 }

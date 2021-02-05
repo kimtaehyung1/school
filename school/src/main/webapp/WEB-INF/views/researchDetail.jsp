@@ -323,12 +323,6 @@
 						               		<input type="hidden" id="regName" name="regName" value="${sessionScope.memberName }"/>
 						               		<input type="hidden" id="udtName" name="udtName" value="${sessionScope.memberName }"/>
 									</tr>
-									<!--   <tr>
-               <th>첨부파일</th>
-               <td colspan="5" class="tl">
-               	내용입력 <img src="resources/images/sub/btn/btn_pdf.gif" alt="pdf" />
-               </td>
-              </tr> -->
 								</tbody>
 							</table>
 
@@ -342,7 +336,7 @@
 								</c:if> 
 							<!-- 	<span class="wte_l"><a href="#" class="wte_r">결과보기</a></span>  -->
 								<span class="wte_l"><a href="#" class="wte_r" id="save">저장</a></span>
-								<span class="wte_l"><a href="#" class="wte_r">사유전체보기</a></span>
+								<!-- <span class="wte_l"><a href="#" class="wte_r">사유전체보기</a></span> -->
 								<span class="wte_l"><a href="javascript:back();" class="wte_r">취소</a></span>
 							</span>
 							 
@@ -382,7 +376,7 @@
 
 	function result(seq) {
 		 window.open("researchPopup.do?suriSeq="+seq,
-					"researchPopup","width=700,height=350");
+					"researchPopup","width=1020,height=530");
 	}
 
 	function chk() {
@@ -412,7 +406,7 @@
 			var regDate = '${vo.regDate}';
 			
 			var date = new Date(regDate);
-		 	var year = date.getFullYear().toString().substring(2, 4);              //yyyy
+		 	var year = date.getFullYear().toString().substring(2, 4); //yyyy
 		    var month = (1 + date.getMonth());          //M
 		    month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
 		    var day = date.getDate();                   //d
@@ -429,16 +423,18 @@
 			var arr = [];
 			var chkbox = $(".chk");
 			
+			
 			for(i=0;i<chkbox.length;i++) {
 			    if (chkbox[i].checked == true){
 			        send_array[send_cnt] = chkbox[i].value;
 			        send_cnt++;
 			        arr.push(chkbox[i].value);
+			    }else {
+			    	arr.push("0");
 			    }
 			}
-			
-			var chkArr = Array();
 
+			alert(arr);
 			//항목 타이틀 
 		 	var suriTitle2 = '${list02}';
 			var suriTitle3 = '${list03}';
@@ -463,13 +459,13 @@
 			 		"regDate": regDateString,
 					"udtName": udtName,
 					"suriTitle1": suriTitle1,
-					"suriNum": '['+arr.toString()+']',
+					"suriNum": arr.toString(),
 					"suriTitle2": suriTitle2,
 					"suriTitle3": suriTitle3,
 					"suriTitle4": suriTitle4,
 					"suriTitle5": suriTitle5,
 					"suriTitle6": suriTitle6,
-					"description": '['+suriTitle7.toString()+']'
+					"description": suriTitle7.toString()
 			}
 			
 			if( $(":checkbox[name='chk']:checked").length == 0 ){
@@ -477,7 +473,7 @@
 				return; //체크 한번 하면 두번은 못하게 막기 
 				
 			} else {
-		 		$.ajax({
+		 	 	 $.ajax({
 					url: "researchConfirm.do",
 					dataType: "html",
 					type: "post",
@@ -488,7 +484,7 @@
 					}, error: function(request, status, error){
 						alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
 					}
-				}); 
+				});   
 			}
 		});
 	});

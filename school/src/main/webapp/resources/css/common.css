@@ -460,3 +460,5 @@
 .sitemap_box ul li a { color:#767676;text-decoration:none;}
 .sitemap_box ul li a:hover,.sitemap_box ul li a:visited, .sitemap_box ul li a:active {color:#767676; font-weight:bold; text-decoration:none;}
 .sitemap_box .sitemap_c { clear:both; padding-top:100px;}
+#chartdiv {width:100%; height:600px;}
+

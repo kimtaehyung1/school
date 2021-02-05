@@ -211,6 +211,14 @@
 	                </td>
 	                </tr>
 	              <tr>
+	               <tr>
+	                	<th style="font-size: 5px; color:red;">주의사항</th>
+	                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
+	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * \ ( ) \ + _ ]를 입력할 수 없습니다.</br>
+	                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
+	                	
+	                	</td>
+	                </tr>
 	               <td colspan="6" class="tl">
 	               	    <div class="research" >
 	             	   <c:forEach var="vo" items="${list01 }" varStatus="status">
@@ -310,8 +318,6 @@
 				suriArray.push($(this).val());
 			});
 			
-			alert(suriArray);
-			
 			if(surTitle == "")  {
 				alert("제목을 입력하세요.");
 				$("#surTitle").focus();
@@ -325,12 +331,21 @@
 				alert("종료일을 설정하세요.");
 				return false;
 			}
-			if($("#suriTitle1").val() == "") {
-				alert("하나이상의 문항을 입력하세요");
-				$("#suriTitle1").focus();
+			if($("#title").val() == "") {
+				alert("하나이상의 문제을 입력하세요");
+				$("#title").focus();
 				return false;
 			} 
-			
+	/* 		if($('input[id="title"]').length < 5) {
+				alert("설문조사는 최소 5문제 이상 만들어야 합니다. 확인해주세요.");
+				$("#title").focus();
+				return false;
+			} */
+			if($("#content").val() == "") {
+				alert("하나이상의 문항을 입력하세요");
+				$("#content").focus();
+				return false;
+			} 
 			
 			var param = {
 					"suriSeq": suriSeq,

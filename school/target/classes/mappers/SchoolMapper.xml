@@ -97,7 +97,7 @@
     </delete>
     <select id="count" resultType="int">
     	SELECT COUNT(*) FROM TB_00_MEMBER
-		WHERE USER_ID = #{USERID} AND ADMIN_PW = #{adminPw}
+		WHERE USER_ID = #{userId} AND ADMIN_PW = #{adminPw}
     </select>
     
     <!-- 상세저장 -->
@@ -119,42 +119,42 @@
 	   )
     </insert>
     <resultMap type="com.school.web.vo.RSIVO" id="rsiMap">
-    	<id column="SURI_SEQ" property="suriSeq"/>
-    	<id column="SUR_TITLE" property="surTitle"/>
-    	<id column="QUE_CNT" property="queCnt"/>
-    	<id column="SUR_SAT_DATE" property="surSatDate"/>
-    	<id column="SUR_END_DATE" property="surEndDate"/>
-    	<id column="SURI_TITLE1" property="suriTitle1"/>
-    	<id column="SURI_TITLE2" property="suriTitle2"/>
-    	<id column="SURI_TITLE3" property="suriTitle3"/>
-    	<id column="SURI_TITLE4" property="suriTitle4"/>
-    	<id column="SURI_TITLE5" property="suriTitle5"/>
-    	<id column="SURI_TITLE6" property="suriTitle6"/>
-    	<id column="SURI_TITLE7" property="suriTitle7"/>
-    	<id column="WRITER" property="writer"/>
-    	<id column="REG_NAME" property="regName"/>
-    	<id column="REG_DATE" property="regDate"/>
-    	<id column="UDT_NAME" property="udtName"/>
-    	<id column="SURI_NUM1" property="suriNum1"/>
-    	<id column="SURI_NUM2" property="suriNum2"/>
-    	<id column="SURI_NUM3" property="suriNum3"/>
-    	<id column="SURI_NUM4" property="suriNum4"/>
-    	<id column="SURI_NUM5" property="suriNum5"/>
+    	<result column="SURI_SEQ" property="suriSeq"/>
+    	<result column="SUR_TITLE" property="surTitle"/>
+    	<result column="QUE_CNT" property="queCnt"/>
+    	<result column="SUR_SAT_DATE" property="surSatDate"/>
+    	<result column="SUR_END_DATE" property="surEndDate"/>
+    	<result column="SURI_TITLE1" property="suriTitle1"/>
+    	<result column="SURI_TITLE2" property="suriTitle2"/>
+    	<result column="SURI_TITLE3" property="suriTitle3"/>
+    	<result column="SURI_TITLE4" property="suriTitle4"/>
+    	<result column="SURI_TITLE5" property="suriTitle5"/>
+    	<result column="SURI_TITLE6" property="suriTitle6"/>
+    	<result column="SURI_TITLE7" property="suriTitle7"/>
+    	<result column="WRITER" property="writer"/>
+    	<result column="REG_NAME" property="regName"/>
+    	<result column="REG_DATE" property="regDate"/>
+    	<result column="UDT_NAME" property="udtName"/>
+    	<result column="SURI_NUM1" property="suriNum1"/>
+    	<result column="SURI_NUM2" property="suriNum2"/>
+    	<result column="SURI_NUM3" property="suriNum3"/>
+    	<result column="SURI_NUM4" property="suriNum4"/>
+    	<result column="SURI_NUM5" property="suriNum5"/>
     	
     	<association javaType="com.school.web.vo.RSRVO" property="rsrvo">
     		<id column="SURR_SEQ" property="surrSeq"/>
 	    	<id column="SURI_SEQ" property="suriSeq"/>
-	    	<id column="SURI_NUM" property="suriNum"/>
-	    	<id column="DESCRIPTION" property="description"/>
-	    	<id column="WRITER" property="writer"/>
-	   		<id column="REG_NAME" property="regName"/>
-	    	<id column="REG_DATE" property="regDate"/>
-	    	<id column="UDT_NAME" property="udtName"/>
-	    	<id column="SURQ_TITLE" property="surqTitle"/>
+	    	<result column="SURI_NUM" property="suriNum"/>
+	    	<result column="DESCRIPTION" property="description"/>
+	    	<result column="WRITER" property="writer"/>
+	   		<result column="REG_NAME" property="regName"/>
+	    	<result column="REG_DATE" property="regDate"/>
+	    	<result column="UDT_NAME" property="udtName"/>
+	    	<result column="SURQ_TITLE" property="surqTitle"/>
     	</association>
     </resultMap>
     <select id="researchDetail" resultMap="rsiMap" >
- 		select 
+ 			select 
 	    	A.SURI_SEQ,
 			A.SUR_TITLE,
 			A.SUR_SAT_DATE,
@@ -167,7 +167,6 @@
 			A.SURI_TITLE5,
 			A.SURI_TITLE6,
 			A.SURI_TITLE7,
-       		b.DESCRIPTION,
 			A.SURI_NUM1,
 			A.SURI_NUM2,
 			A.SURI_NUM3,
@@ -177,23 +176,23 @@
 			A.REG_DATE,
 			A.REG_NAME,
 			A.UDT_NAME
-		FROM TB_06_RSI A , tb_06_rsr b
-		WHERE a.suri_seq = b.suri_seq
-      and A.SURI_SEQ = #{suriSeq}
+		FROM TB_06_RSI A 
+		WHERE A.SURI_SEQ = #{suriSeq}
     </select>
-    
-    <select id="result"  resultMap="rsiMap"> 
+    <select id="result" resultType="map"> 
     	SELECT  
-    		A.SURI_SEQ,
-			A.SUR_TITLE,
-			B.SURQ_TITLE,
-			B.SURI_NUM,
-			A.SURI_TITLE1,
-			B.DESCRIPTION ,
-			B.REG_NAME,
-			B.REG_DATE
-		FROM TB_06_RSI A , TB_06_RSR B 
-		WHERE A.SURI_SEQ = B.SURI_SEQ 
-		AND	A.SURI_SEQ = #{suriSeq}
+    		A.SURI_SEQ as suriSeq,
+    		B.SURR_SEQ as surrSeq,
+			A.SUR_TITLE as surTitle,
+			A.QUE_CNT as queCnt,
+			B.SURQ_TITLE as surqTitle,
+			B.SURI_NUM  as suriNum,
+			A.SURI_TITLE1 as suriTltle1,
+			B.DESCRIPTION as description,
+			B.REG_NAME as regName,
+			B.REG_DATE as regDate 
+		FROM TB_06_RSI A left outer join TB_06_RSR B 
+		on A.SURI_SEQ = B.SURI_SEQ 
+		where A.SURI_SEQ = #{suriSeq} 
     </select>
 </mapper> 

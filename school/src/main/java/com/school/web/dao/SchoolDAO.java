@@ -1,7 +1,6 @@
 package com.school.web.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -60,7 +59,7 @@ public class SchoolDAO {
 		return sqlSession.insert("cafeteria.insert", rsrvo);
 	}
 	
-	public List<RSIVO> result(String suriSeq) {
+	public List result(String suriSeq) {
 		return sqlSession.selectList("cafeteria.result", suriSeq);
 	}
 }

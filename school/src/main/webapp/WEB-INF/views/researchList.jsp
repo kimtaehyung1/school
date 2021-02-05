@@ -186,7 +186,6 @@
             <col width="15%"/>
             <col width="15%"/>
             <col width="10%"/>
-        <%--     <col width="8%"/> --%>
             <col width="10%"/>
             </colgroup>
             <tbody>
@@ -196,22 +195,32 @@
                 <th>시작일</th>
                 <th>마감일</th>
                 <th>완료여부</th>
-              <!--   <th>첨부</th> -->
                 <th>결과확인</th>
               </tr>
-             
               <c:forEach items="${list }" var="vo">
              	  <tr>
 	                <td>${vo.suriSeq }</td>
-	                <td><a href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a></td>
+	                
+					<c:choose>
+						<c:when test="${sessionScope.adminYn == 'Y' }">
+							<td><a href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a></td>
+						</c:when>
+						<c:otherwise>
+							<c:if test="${vo.surIsend == '진행중' }">
+							<td><a href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a></td>
+							</c:if>
+							<c:if test="${vo.surIsend == '완료' }">
+								<td><a href="javascript:failare()">${vo.surTitle }</a></td>
+							</c:if>
+						</c:otherwise>
+					</c:choose>
 	                <td>${vo.surSatDate }</td>                
 	                <td>${vo.surEndDate }</td>
 	                <td>${vo.surIsend }</td>
 	              <!--   <td><img src="resources/images/sub/btn/btn_pdf.gif" alt="pdf" /></td> -->
-	                <td><a href="#"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
+	                <td><a href="javascript:result(${vo.suriSeq })"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
 	              </tr>
               </c:forEach>
-             
             </tbody>
           </table>
           
@@ -280,9 +289,23 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
 
-	function detail(suriSeq){
-		location.href = 'researchDetail.do?suriSeq='+suriSeq;
+	function result(seq) {
+		 window.open("researchPopup.do?suriSeq="+seq,
+					"researchPopup","width=1020,height=530");
 	}
+
+
+		function detail(suriSeq){
+			location.href = 'researchDetail.do?suriSeq='+suriSeq;
+		}
+
+		function failare(){
+			alert("설문이 완료 되었습니다. 다음에 이용하시기 바랍니다");
+		}
+	
+
+	
+	
 
 	var flag1=true;
 	var flag2=true;

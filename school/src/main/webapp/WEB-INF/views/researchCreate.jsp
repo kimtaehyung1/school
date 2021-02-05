@@ -10,7 +10,20 @@
 <link rel="stylesheet" href="resources/css/base.css">
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
-
+<script type="text/javascript">
+	// 특수문자 정규식 변수(공백 미포함)
+	
+	function checkSpecial(str) { 
+		
+		var re = /[\#,$%^&*\()\+_]/gi;
+		var param = $('input[class="inp"]').val();
+		
+		if(re.test(str)) {
+			alert("특수문자"+"["+ " "+str+" "+"]" + "를 사용할수 없습니다.\n삭제후 다시 작성해주세요");
+			return false;
+		}
+	}
+</script>
 </head>
 <body>
 <div id="wrap"> 
@@ -205,6 +218,7 @@
 	              </tr>
 	              <tr>
 	                <th>문항수</th>
+	               
 	                <td colspan="5" class="tl">
 	                 <select id="queCnt" name="queCnt" onchange="fn_selectcnt(this.value)">
 	                	<option>5개</option>
@@ -213,14 +227,21 @@
 	                    <option>20개</option>
 	                </select>
 	                </td>
+	                 
 	                </tr>
+	                <tr>
+	                	<th style="font-size: 5px; color:red;">주의사항</th>
+	                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
+	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * \ ( ) \ + _ ]를 입력할 수 없습니다.</br>
+	                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
+	                	
+	                	</td>
+	                </tr>
+	                
 	              <tr>
 	              
 	               <td colspan="6" class="tl">
-	               	    <div class="research">
-	             			
-						</div>
-						
+	               	    <div class="research"></div>
 	               </td>
 	              		<input type="hidden" id="writer" name="writer" value="${sessionScope.memberName }"/>
 	               		<input type="hidden" id="regName" name="regName" value="${sessionScope.memberName }"/>
@@ -280,6 +301,9 @@
 
 <script type="text/javascript">
 
+
+	
+	
 	function back() {
 		window.history.back();
 	}
@@ -296,6 +320,7 @@
 			var udtName = $('#udtName').val();
 			//문제 문항들 
 			var suriArray = [];
+			
 			$('input[class="inp"]').each(function(i){
 				suriArray.push($(this).val());
 			});
@@ -313,14 +338,24 @@
 				alert("종료일을 설정하세요.");
 				return false;
 			}
-			if($("#suriTitle1").val() == "") {
-				alert("하나이상의 문항을 입력하세요");
-				$("#suriTitle1").focus();
+			if($("#title").val() == "") {
+				alert("하나이상의 문제을 입력하세요");
+				$("#title").focus();
 				return false;
 			} 
-			
+			if($('input[id="title"]').length < 5) {
+				alert("설문조사는 최소 5문제 이상 만들어야 합니다. 확인해주세요.");
+				$("#title").focus();
+				return false;
+			}
+			if($("#content").val() == "") {
+				alert("하나이상의 문항을 입력하세요");
+				$("#content").focus();
+				return false;
+			} 
+		
 			var param = {
-				    "surTitle":surTitle,
+				    "surTitle": surTitle,
 					"queCnt": queCnt,
 					"surSatDate":surSatDate,
 					"surEndDate":surEndDate,
@@ -333,7 +368,7 @@
 			/*     var jsonData = JSON.stringify(param); */
 				  /*   jQuery.ajaxSettings.traditional = true;   */
 			    
- 	 	  	 $.ajax({
+ 		  	 $.ajax({
 				url: "researchCreate.do",
 			 	dataType: "html",
 				type: "post",
@@ -353,14 +388,14 @@
 		$(".research").empty();
 			for(var i =1; i<=selectCnt ;i++){
 					var div = $("<div/>");
-					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='suriTitle1'  class='inp' maxlength='50'></input></p>");
-					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle'   class='inp'maxlength='50'/></li>");
-					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
+					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'></input></p>");
+					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)'  class='inp'maxlength='50'/></li>");
+					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
+					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
+					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
+					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
 					/* var q6 = $("</ul><br>"); */
-					var q6 = $("<input type='hidden' name='suriTitle' id='suriTitle' class='inp' style='width:400px;' maxlength='40'/></ul><br>");
+					var q6 = $("<input type='hidden' name='suriTitle'  class='inp' style='width:400px;' maxlength='40'/></ul><br>");
 					$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 					$(".research").append(div);
 			}
@@ -369,14 +404,14 @@
 	$(function(){
 			for(var i =1; i<=5 ;i++){
 				var div = $("<div/>");
-				var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle'  id='suriTitle1' class='inp' maxlength='50'></input></p>");
-				var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
-				var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' class='inp' maxlength='50'/></li>");
+				var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='title' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'></input></p>");
+				var q1 = $("<ul><li>①&nbsp;<input type='text' onkeyup='checkSpecial(this.value)' id='content' class='inp' maxlength='50'/></li>");
+				var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
+				var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
+				var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp'maxlength='50'/></li>");
+				var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
 			/* 	var q6 = $("</ul><br>"); */
-				var q6 = $("<br><input type='hidden' name='suriTitle' id='suriTitle' class='inp' style='width:400px;' maxlength='40'/></ul><br>");
+				var q6 = $("<br><input type='hidden' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></ul><br>");
 				$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 				$(".research").append(div);
 			}
