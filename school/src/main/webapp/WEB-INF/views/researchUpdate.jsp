@@ -196,8 +196,8 @@
 	                <td class="tl"><input type="text" id="surSatDate" name="surSatDate" value="${vo.surSatDate }" maxlength="8" style="width:100px;" /></td>
 	                <th>종료일</th>
 	                <td class="tl"><input type="text" id="surEndDate" name="surEndDate" value="${vo.surEndDate }" maxlength="8" style="width:100px;" /></td>
-	                <th>결과확인</th>
-	                <td class="tl"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td>
+	            <!--     <th>결과확인</th>
+	                <td class="tl"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td> -->
 	              </tr>
 	              <tr>
 	                <th>문항수</th>
@@ -214,7 +214,7 @@
 	               <tr>
 	                	<th style="font-size: 5px; color:red;">주의사항</th>
 	                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
-	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * \ ( ) \ + _ ]를 입력할 수 없습니다.</br>
+	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * ( ) + _ ]를 입력할 수 없습니다.</br>
 	                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
 	                	
 	                	</td>
@@ -222,14 +222,15 @@
 	               <td colspan="6" class="tl">
 	               	    <div class="research" >
 	             	   <c:forEach var="vo" items="${list01 }" varStatus="status">
-							<p>${status.count }. <input type="text" value="${vo }" class="inp" maxlength="50"/></p>
+							<p>${status.count }. 
+							<input type="text" value="${vo }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)" /></p>
 						 <ul class="test-li">
-								<li><input type="text" value="${list02[status.index] }" class="inp" maxlength="50"/></li> 
-								<li><input type="text" value="${list03[status.index] }" class="inp" maxlength="50"/></li> 
-								<li><input type="text" value="${list04[status.index] }" class="inp" maxlength="50"/></li> 
-								<li><input type="text" value="${list05[status.index] }" class="inp" maxlength="50"/></li> 
-								<li><input type="text" value="${list06[status.index] }" class="inp" maxlength="50"/></li> 
-								<li><input type="hidden" value="${list07[status.index] }" class="inp" maxlength="40" style="width: 600px;" />
+								<li><input type="text" value="${list02[status.index] }" class="inp" onkeyup="checkSpecial(this.value)" maxlength="50"/></li> 
+								<li><input type="text" value="${list03[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
+								<li><input type="text" value="${list04[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
+								<li><input type="text" value="${list05[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
+								<li><input type="text" value="${list06[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
+								<li><input type="hidden" value="${list07[status.index] }" class="inp" maxlength="40" style="width: 600px;" onkeyup="checkSpecial(this.value)"/>
 								</li>
 								<br />
 							</ul>
@@ -291,6 +292,16 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+	function checkSpecial(str) { 
+		
+		var re = /[\#,$%^&*()+_]/gi;
+		
+		if(re.test(str)) {
+			alert("특수문자"+"["+ " "+str+" "+"]" + "를 사용할수 없습니다.\n삭제후 다시 작성해주세요");
+			return false;
+		}
+	}
 
 	$(document).ready(function(){
 		$("#update").click(function(){

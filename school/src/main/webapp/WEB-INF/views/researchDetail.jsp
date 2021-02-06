@@ -13,6 +13,16 @@
 	rel="Stylesheet" type="text/css" />
 <script type="text/javascript"
 	src="http://code.jquery.com/jquery-1.11.3.js"></script>
+<script type="text/javascript">
+	function checkSpecial(str) { 
+		
+		var re = /[\#,$%^&*\()\+_]/gi;
+		if(re.test(str)) {
+			alert("특수문자"+"["+ " "+str+" "+"]" + "를 사용할수 없습니다.\n삭제후 다시 작성해주세요");
+			return false;
+		}
+	}
+</script>
 <body>
 	<div id="wrap">
 		<!--skip S-->
@@ -297,20 +307,26 @@
 										<th>문항수</th>
 										<td colspan="5" class="tl">${vo.queCnt }개</td>
 									</tr>
+									      <tr>
+							                	<th style="font-size: 5px; color:red;">주의사항</th>
+							                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
+							                		※ [선택사유] 에는 특수문자 [ \ # , $ % ^ & * \ ( ) \ + _ ]를 입력할 수 없습니다.</br>
+							                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
+							                	</td>
+							                </tr>
 									<tr>
 										<td colspan="6" class="tl">
 
 											<div class="research">
 												<c:forEach var="vo" items="${list01 }" varStatus="status">
 													<p>${status.count }. ${vo }</p>
-												 <ul class="test-li">
-														<li><input type="checkbox" value="1" name="chk" id="chk" class="chk"/> ${list02[status.index] }</li> 
-														<li><input type="checkbox" value="2" name="chk" id="chk" class="chk"/> ${list03[status.index] }</li>
-														<li><input type="checkbox" value="3" name="chk" id="chk" class="chk"/> ${list04[status.index] }</li>
-														<li><input type="checkbox" value="4" name="chk" id="chk" class="chk"/> ${list05[status.index] }</li>
-														<li><input type="checkbox" value="5" name="chk" id="chk" class="chk"/> ${list06[status.index] }</li>
-														<li>선택사유&nbsp;&nbsp;&nbsp; <input type="text" value="${list07[status.index] }" id="list07" class="inp" style="width: 600px;" />
-														</li>
+												 		<ul class="test-li">
+															<li><input type="checkbox" value="1" name="chk" id="chk" class="chk"/> ${list02[status.index] }</li> 
+															<li><input type="checkbox" value="2" name="chk" id="chk" class="chk"/> ${list03[status.index] }</li>
+															<li><input type="checkbox" value="3" name="chk" id="chk" class="chk"/> ${list04[status.index] }</li>
+															<li><input type="checkbox" value="4" name="chk" id="chk" class="chk"/> ${list05[status.index] }</li>
+															<li><input type="checkbox" value="5" name="chk" id="chk" class="chk"/> ${list06[status.index] }</li>
+															<li>선택사유&nbsp;&nbsp;&nbsp; <input maxlength="50" type="text" value="${list07[status.index] }" onkeyup="checkSpecial(this.value)" id="list07" class="inp" style="width: 600px;" /></li>
 														<br />
 													</ul>
 												</c:forEach>
@@ -375,10 +391,23 @@
 <script type="text/javascript">
 
 	function result(seq) {
-		 window.open("researchPopup.do?suriSeq="+seq,
-					"researchPopup","width=1020,height=530");
-	}
+		var suriSeq = '${vo.suriSeq}';
 
+		$.ajax({
+			url:"researchPopup.do?suriSeq="+seq,
+			method:"get",
+			dataType:"html",
+			success: eventSuccess,
+			error: function(xhr, status, error) {
+				alert("설문조사 투표후 [결과보기]를 확인하여 주세요.");
+			}
+		});
+
+		function eventSuccess(data) {
+			window.open("researchPopup.do?suriSeq="+seq,"researchPopup","width=900,height=550");
+		}
+	}
+	
 	function chk() {
 		
 		var suriSeq = '${vo.suriSeq}';
@@ -429,12 +458,10 @@
 			        send_array[send_cnt] = chkbox[i].value;
 			        send_cnt++;
 			        arr.push(chkbox[i].value);
-			    }else {
-			    	arr.push("0");
 			    }
 			}
 
-			alert(arr);
+
 			//항목 타이틀 
 		 	var suriTitle2 = '${list02}';
 			var suriTitle3 = '${list03}';

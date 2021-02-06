@@ -214,8 +214,12 @@
 							</c:if>
 						</c:otherwise>
 					</c:choose>
-	                <td>${vo.surSatDate }</td>                
-	                <td>${vo.surEndDate }</td>
+	                <td><fmt:parseDate value="${vo.surSatDate }"
+												var="surSatDate1" pattern="yyyyMMdd" scope="page" /> <fmt:formatDate
+												value="${surSatDate1 }" pattern="yyyy-MM-dd" /></td>                
+	                <td><fmt:parseDate value="${vo.surEndDate }"
+												var="surEndDate1" pattern="yyyyMMdd" scope="page" /> <fmt:formatDate
+												value="${surEndDate1 }" pattern="yyyy-MM-dd" /></td>
 	                <td>${vo.surIsend }</td>
 	              <!--   <td><img src="resources/images/sub/btn/btn_pdf.gif" alt="pdf" /></td> -->
 	                <td><a href="javascript:result(${vo.suriSeq })"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
@@ -289,19 +293,36 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
 
+	
+
 	function result(seq) {
-		 window.open("researchPopup.do?suriSeq="+seq,
-					"researchPopup","width=1020,height=530");
+		
+		var suriSeq = '${vo.suriSeq}';
+
+		$.ajax({
+			url:"researchPopup.do?suriSeq="+seq,
+			method:"get",
+			dataType:"html",
+			success: eventSuccess,
+			error: function(xhr, status, error) {
+				alert("설문조사 투표후 [결과보기]를 확인하여 주세요.");
+			}
+		});
+
+		function eventSuccess(data) {
+			window.open("researchPopup.do?suriSeq="+seq,"researchPopup","width=900,height=550");
+		}
 	}
 
+	
+	
+	function detail(suriSeq){
+		location.href = 'researchDetail.do?suriSeq='+suriSeq;
+	}
 
-		function detail(suriSeq){
-			location.href = 'researchDetail.do?suriSeq='+suriSeq;
-		}
-
-		function failare(){
-			alert("설문이 완료 되었습니다. 다음에 이용하시기 바랍니다");
-		}
+	function failare(){
+		alert("설문이 완료 되었습니다. 다음에 이용하시기 바랍니다");
+	}
 	
 
 	

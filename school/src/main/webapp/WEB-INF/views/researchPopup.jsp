@@ -45,7 +45,7 @@
 	var cnt = '${queCnt}';
 	var list = JSON.parse(list); 
 
-  		 	var num100 = list[0].nList[0];
+   		 	var num100 = list[0].nList[0];
   		    var num101 = list[0].nList[1];
 			var num102 = list[0].nList[2];
 			var num103 = list[0].nList[3];
@@ -61,7 +61,7 @@
 		 	var num301 = list[2].nList[1];
 			var num302 = list[2].nList[2];	
 			var num303 = list[2].nList[3];	
-			var num304 = list[2].nList[4];	  
+			var num304 = list[2].nList[4];	   
 
 	am4core.useTheme(am4themes_animated);
 	// Create chart instance
@@ -75,20 +75,16 @@
 	}
 	
 	for(var i=0; i<list.length; i++){
-		for(var j=0; j<5; j++){
-			var num = list[i].nList[j];
-		}
-		
 	
-		chart.data = [
-			{ "category": arr[0], "value1": num100, "value2": num200, "value3": num300 }, 
-		 	{ "category": arr[1], "value1": num101, "value2": num201, "value3": num301 },
-	 		{ "category": arr[2], "value1": num102, "value2": num202, "value3": num302 },
-	 		{ "category": arr[3], "value1": num103, "value2": num203, "value3": num303 },
-	 		{ "category": arr[4], "value1": num104, "value2": num204, "value3": num304 }
+		 chart.data = [
+			{ "category": arr[0], "value0": num100, "value1": num200, "value2": num300 }, 
+		 	{ "category": arr[1], "value0": num101, "value1": num201, "value2": num301 },
+	 		{ "category": arr[2], "value0": num102, "value1": num202, "value2": num302 },
+	 		{ "category": arr[3], "value0": num103, "value1": num203, "value2": num303 },
+	 		{ "category": arr[4], "value0": num104, "value1": num204, "value2": num304 }
 
 	 		
-	 	]; 
+	 	];  
 	}			
 	
 	// Create axes
@@ -123,8 +119,9 @@
  	/* createSeries("value",  "0#0");   
 	createSeries("value2",  "0#0");    
 	createSeries("value",  "0#0");  */ 
- 	 for(var i=1; i<list.length+1; i++){ //다시 정비 
- 		createSeries("value"+i,  i+"#"+i); 
+	
+ 	 for(var i=0; i<list.length; i++){ //다시 정비 
+ 		createSeries("value"+i,  list[i].date+"#"); 
  	} 
 	chart.legend = new am4charts.Legend();
 	chart.cursor = new am4charts.XYCursor();

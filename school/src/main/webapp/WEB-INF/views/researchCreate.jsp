@@ -15,8 +15,7 @@
 	
 	function checkSpecial(str) { 
 		
-		var re = /[\#,$%^&*\()\+_]/gi;
-		var param = $('input[class="inp"]').val();
+		var re = /[\#,$%^&*()+_]/gi;
 		
 		if(re.test(str)) {
 			alert("특수문자"+"["+ " "+str+" "+"]" + "를 사용할수 없습니다.\n삭제후 다시 작성해주세요");
@@ -213,8 +212,8 @@
 	                <td class="tl"><input type="text" id="surSatDate" name="surSatDate"  style="width:100px;" maxlength="8"/></td>
 	                <th>종료일</th>
 	                <td class="tl"><input type="text" id="surEndDate" name="surEndDate"  style="width:100px;" maxlength="8"/></td>
-	                <th>결과확인</th>
-	                <td class="tl"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td>
+	            <!--     <th>결과확인</th>
+	                <td class="tl"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td> -->
 	              </tr>
 	              <tr>
 	                <th>문항수</th>
@@ -232,14 +231,11 @@
 	                <tr>
 	                	<th style="font-size: 5px; color:red;">주의사항</th>
 	                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
-	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * \ ( ) \ + _ ]를 입력할 수 없습니다.</br>
+	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * ( ) + _ ] 를 입력할 수 없습니다.</br>
 	                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
-	                	
 	                	</td>
 	                </tr>
-	                
 	              <tr>
-	              
 	               <td colspan="6" class="tl">
 	               	    <div class="research"></div>
 	               </td>
@@ -325,7 +321,7 @@
 				suriArray.push($(this).val());
 			});
 			
-			if(surTitle == "")  {
+	/*  	if(surTitle == "")  {
 				alert("제목을 입력하세요.");
 				$("#surTitle").focus();
 				return false;
@@ -337,17 +333,12 @@
 			if(surEndDate == "") {
 				alert("종료일을 설정하세요.");
 				return false;
-			}
+			} */
 			if($("#title").val() == "") {
 				alert("하나이상의 문제을 입력하세요");
 				$("#title").focus();
 				return false;
 			} 
-			if($('input[id="title"]').length < 5) {
-				alert("설문조사는 최소 5문제 이상 만들어야 합니다. 확인해주세요.");
-				$("#title").focus();
-				return false;
-			}
 			if($("#content").val() == "") {
 				alert("하나이상의 문항을 입력하세요");
 				$("#content").focus();
@@ -363,7 +354,7 @@
 					"regName": regName,
 					"udtName": udtName,
 					"suriList": suriArray
-			} 
+			}
 			
 			/*     var jsonData = JSON.stringify(param); */
 				  /*   jQuery.ajaxSettings.traditional = true;   */
@@ -388,7 +379,7 @@
 		$(".research").empty();
 			for(var i =1; i<=selectCnt ;i++){
 					var div = $("<div/>");
-					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'></input></p>");
+					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='title' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'></input></p>");
 					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)'  class='inp'maxlength='50'/></li>");
 					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
 					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
