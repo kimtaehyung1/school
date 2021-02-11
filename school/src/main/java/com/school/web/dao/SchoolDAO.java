@@ -1,6 +1,8 @@
 package com.school.web.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,16 +29,29 @@ public class SchoolDAO {
 		return sqlSession.selectOne("cafeteria.memberInfo", vo);
 	}
 	
-	public void logout(HttpSession session) {
+	public void logout(HttpSession session) {}
+	
+	public int countArticle(String search_option, String keyword) {
 		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword", keyword);
+		map.put("search_option", search_option);
+		return sqlSession.selectOne("cafeteria.countArticle", map);
 	}
 	
-	public List<RSIVO> researchList(RSIVO vo) {
-		return sqlSession.selectList("cafeteria.researchList", vo);
+	public List<RSIVO> researchList(int start, int end, String search_option, String keyword) {
+		
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("search_option", search_option);
+		map.put("keyword", keyword);
+		map.put("start", start);
+		map.put("end", end);
+		
+		return sqlSession.selectList("cafeteria.researchList", map);
 	}
 	
 	public int create(RSIVO rsivo) {
-		  return sqlSession.insert("cafeteria.researchRSI", rsivo);
+		return sqlSession.insert("cafeteria.researchRSI", rsivo);
 	}
 
 	public RSIVO researchDetail(String suriSeq) {
@@ -59,7 +74,10 @@ public class SchoolDAO {
 		return sqlSession.insert("cafeteria.insert", rsrvo);
 	}
 	
-	public List result(String suriSeq) {
+	public List<Object> result(String suriSeq) {
+		return sqlSession.selectList("cafeteria.result", suriSeq);
+	}
+	public List<Object> description(String suriSeq) {
 		return sqlSession.selectList("cafeteria.result", suriSeq);
 	}
 }

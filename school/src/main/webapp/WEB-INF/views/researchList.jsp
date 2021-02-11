@@ -173,8 +173,6 @@
         <h3><img src="resources/images/sub/particiation/title_05.gif" alt="급식기구관리전환" /></h3>
         <p class="history"><img src="resources/images/sub/history_home.gif" alt="home" /> 알림마당 <img src="resources/images/sub/history_arrow.gif" alt="다음" /> <strong>설문조사</strong></p>
         <p class="pt30"></p>
-        
-       
         <div class="tbl_box">
          <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbl_type01" summary="설문조사">
             <caption>
@@ -199,18 +197,23 @@
               </tr>
               <c:forEach items="${list }" var="vo">
              	  <tr>
-	                <td>${vo.suriSeq }</td>
-	                
+	                <td>${vo.rnum }</td>
 					<c:choose>
 						<c:when test="${sessionScope.adminYn == 'Y' }">
-							<td><a href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a></td>
+							<td style="text-align: center; text-decoration: none;"><pre style="overflow: hidden; text-overflow: ellipsis; text-align: left;"> <a style="white-space: pre;" title="${vo.surTitle }" href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a>
+								</pre>
+							</td>
 						</c:when>
 						<c:otherwise>
 							<c:if test="${vo.surIsend == '진행중' }">
-							<td><a href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a></td>
+							<td style="text-align: center; text-decoration: none;"><pre style="overflow: hidden; text-overflow: ellipsis; text-align: left;"> <a style="white-space: pre;" title="${vo.surTitle }" href="javascript:detail(${vo.suriSeq })">${vo.surTitle }</a>
+								</pre>
+							</td>
 							</c:if>
 							<c:if test="${vo.surIsend == '완료' }">
-								<td><a href="javascript:failare()">${vo.surTitle }</a></td>
+								<td style="text-align: center; text-decoration: none;"><pre style="overflow: hidden; text-overflow: ellipsis; text-align: left;"> <a style="white-space: pre;" title="${vo.surTitle }" href="javascript:failare(${vo.suriSeq })">${vo.surTitle }</a>
+								</pre>
+							</td>
 							</c:if>
 						</c:otherwise>
 					</c:choose>
@@ -221,59 +224,69 @@
 												var="surEndDate1" pattern="yyyyMMdd" scope="page" /> <fmt:formatDate
 												value="${surEndDate1 }" pattern="yyyy-MM-dd" /></td>
 	                <td>${vo.surIsend }</td>
-	              <!--   <td><img src="resources/images/sub/btn/btn_pdf.gif" alt="pdf" /></td> -->
-	                <td><a href="javascript:result(${vo.suriSeq })"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
+	                <c:choose>
+						<c:when test="${sessionScope.adminYn == 'Y' }">
+             		 		<td><a href="javascript:result(${vo.suriSeq })"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
+						</c:when>
+						<c:otherwise>
+							<c:if test="${vo.surIsend == '진행중' }">
+							<td><a href="javascript:result(${vo.suriSeq })"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
+							</c:if>
+							<c:if test="${vo.surIsend == '완료' }">
+							<td><a href="javascript:setting(${vo.suriSeq })"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></a></td>
+							</c:if>
+						</c:otherwise>
+					</c:choose>	
 	              </tr>
               </c:forEach>
             </tbody>
           </table>
-          
-          <!-- paging-->
           <ul class="paging">
-            <li><a href="#" title="맨 처음 페이지로 가기"><img src="resources/images/sub/btn/pre_01.gif"  alt="맨 처음 페이지로 가기" /></a></li>
-            <li><a href="#" title="이전 페이지로 가기"><img src="resources/images/sub/btn/pre.gif" alt="이전 페이지로 가기" /></a></li>
-            <li><span title="현재페이지"><a href="#" class="on">1</a></span></li>
-            <li><a href="# " title="2페이지">2</a></li>
-            <li><a href="#" title="3페이지">3</a></li>
-            <li><a href="#" title="4페이지">4</a></li>
-            <li><a href="# " title="5페이지">5</a></li>
-            <li><a href="#" title="6페이지">6</a></li>
-            <li><a href="#" title="7페이지">7</a></li>
-            <li><a href="#" title="8페이지">8</a></li>
-            <li><a href="#" title="9페이지">9</a></li>
-            <li><a href="#" title="10페이지">10</a></li>
-            <li><a href="#" title="다음 페이지로 가기" ><img src="resources/images/sub/btn/next.gif" alt="다음 페이지" /></a></li>
-            <li><a href="#" title="마지막 페이지로 가기"><img src="resources/images/sub/btn/next_01.gif" alt="마지막 페이지" /></a></li>
+          <c:if test="${page.curBlock > 1}">
+            <li><a href="javascript:list(1)" title="맨 처음 페이지로 가기"><img src="resources/images/sub/btn/pre_01.gif"  alt="맨 처음 페이지로 가기" /></a></li>
+          </c:if> 
+          <c:if test="${page.curBlock > 1}">
+            <li><a  href="javascript:list(${page.prevPage})" title="이전 페이지로 가기"><img src="resources/images/sub/btn/pre.gif" alt="이전 페이지로 가기" /></a></li>
+         </c:if>   
+           <c:forEach var="num"
+				begin="${page.blockBegin}" end="${page.blockEnd}">
+				<!-- **현재페이지이면 하이퍼링크 제거 -->
+				<c:choose>
+					<c:when test="${num == page.curPage}">
+						<span style="color: red" class="span">${num}</span>
+	                </c:when>
+					<c:otherwise>
+						<a href="javascript:list(${num})">${num}</a>
+	               	</c:otherwise>
+				</c:choose>
+			</c:forEach> 
+			<c:if test="${page.curBlock <= page.totBlock}">
+            	<li><a href="javascript:list(${page.nextPage})" title="다음 페이지로 가기" ><img src="resources/images/sub/btn/next.gif" alt="다음 페이지" /></a></li>
+            </c:if>
+            <c:if test="${page.curPage <= page.totPage}">
+    	        <li><a href="#" title="마지막 페이지로 가기"><img src="resources/images/sub/btn/next_01.gif" alt="마지막 페이지" /></a></li>
+	        </c:if>
           </ul>
-          <!-- //paging--> 
-          
-          <!-- btn--> 
           <span class="bbs_btn"> 
-
 		  	<c:choose>
 		  		<c:when test="${sessionScope.adminYn == 'Y'  }">
 		          <span class="per_l"><a href="${path }/web/researchCreate.do" class="pre_r">글쓰기</a></span>
 		  		</c:when>
 		  	</c:choose>
-		  
-
           </span> 
-          <!-- //btn--> 
-          
         </div>
-        <div class="search_box">
-          <select>
-            <option>제목</option>
-          </select>
-          <input type="text" id="serch" name="serch" />
-          <a href="#"><img src="resources/images/sub/btn/btn_serch.gif" alt="검색" /></a> </div>
-      </div>
-      
+         <form name="form" action="researchList.do" method="get">
+	        <div class="search_box">
+	          <select name="search_option">
+	    			<option value="sur_title"<c:out value="${map.search_option == 'sur_title'?'selected':''}" />>제목</option>
+	          </select>
+	          <input type="text" id="keyword" name="keyword" />
+	          <a href="javascript:searchClick()"><img src="resources/images/sub/btn/btn_serch.gif" alt="검색" /></a></div>
+	      </div>
+		</form>      
       <p class="bottom_bg"></p>
     </div>
   </div>
-  <!-- //container-->
-  
   <div id="footer">
     <h2>하단</h2>
     <address>
@@ -291,12 +304,42 @@
 </div>
 </body>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
 <script type="text/javascript">
 
-	
+	$(function(){
+		$('#surTitle').tooltip();
+	})
+
+	function searchClick(){
+		
+		var count = '${count}';
+		if(count == 0){
+			alert("검색결과가 없습니다.");
+			location.href="researchList.do";
+			return false;
+		}
+		
+		if(document.getElementById("keyword").value == ""){
+			alert("검색단어를 입력하세요");
+			return false;
+		}else if(document.getElementById("keyword").value.replace(/\s/g,"").length == 0){
+			alert('공백은 입력하실수 없습니다.\n삭제후 다시 입력해주세요');
+		    return false;
+		}
+		document.form.submit();
+	}
+
+	 	
+	  function list(page){
+	       location.href="researchList.do?curPage="+page
+	       +"&search_option=${search_option}" 
+	       +"&keyword=${keyword}";
+	   }
 
 	function result(seq) {
-		
 		var suriSeq = '${vo.suriSeq}';
 
 		$.ajax({
@@ -305,16 +348,14 @@
 			dataType:"html",
 			success: eventSuccess,
 			error: function(xhr, status, error) {
-				alert("설문조사 투표후 [결과보기]를 확인하여 주세요.");
+				alert("결과가 없습니다. 설문조사를 해주시기 바랍니다.");
 			}
 		});
 
 		function eventSuccess(data) {
-			window.open("researchPopup.do?suriSeq="+seq,"researchPopup","width=900,height=550");
+			window.open("researchPopup.do?suriSeq="+seq,"researchPopup","width=800,height=630");
 		}
 	}
-
-	
 	
 	function detail(suriSeq){
 		location.href = 'researchDetail.do?suriSeq='+suriSeq;
@@ -324,10 +365,10 @@
 		alert("설문이 완료 되었습니다. 다음에 이용하시기 바랍니다");
 	}
 	
-
+	function setting() {
+		alert("완료된 설문은 [결과보기] 를 이용할수 없습니다");
+	}
 	
-	
-
 	var flag1=true;
 	var flag2=true;
 	
@@ -506,13 +547,21 @@
 					$("#adminPw").focus();
 					return false;
 				}
-				
-				/* if(adminPw == ) */
 			
 				document.form1.action = "${path}/web/researchList.do" 
 				document.form1.submit();
 			}
 		});
 	});
+	
+	
+/*  	window.onload = function(){
+		var count = '${count}';
+		
+		if(count == 0){
+			alert("검색결과가 없습니다.");
+			location.href="researchList.do";
+		}
+	}  */
 </script>
 </html>

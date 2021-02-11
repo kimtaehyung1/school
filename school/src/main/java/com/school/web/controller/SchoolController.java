@@ -1,9 +1,6 @@
 package com.school.web.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.school.web.service.SchoolService;
+import com.school.web.vo.PageVO;
 import com.school.web.vo.RSIVO;
 import com.school.web.vo.RSRVO;
 import com.school.web.vo.SchoolVO;
@@ -38,10 +36,7 @@ public class SchoolController extends HttpServlet {
 	private SchoolService schoolService;
 
 	@RequestMapping(value = "home.do", method = RequestMethod.GET)
-	public void homeGet(SchoolVO vo, HttpSession session) {
-
-//		schoolService.logout(session);
-	}
+	public void homeGet(SchoolVO vo, HttpSession session) {}
 
 	@RequestMapping(value = "home.do", method = RequestMethod.POST)
 	public ModelAndView logIn(@ModelAttribute SchoolVO vo, HttpSession session) {
@@ -70,16 +65,38 @@ public class SchoolController extends HttpServlet {
 	}
 
 	@RequestMapping(value = "researchList.do", method = RequestMethod.GET)
-	public List<RSIVO> researchList(Model model, RSIVO rsivo, HttpSession session) {
-		List<RSIVO> list = schoolService.researchList(rsivo);
+	public List<RSIVO> researchList(Model model, RSIVO rsivo, HttpSession session
+			,@RequestParam(defaultValue = "all")String search_option
+			,@RequestParam(defaultValue = "1")int curPage
+			,@RequestParam(defaultValue = "")String keyword
+			) {
+		
+		int count = schoolService.countArticle(search_option, keyword);
+		PageVO page = new PageVO(count, curPage);
+		int start = page.getPageBegin();
+		int end = page.getPageEnd();
+		List<RSIVO> list = schoolService.researchList(start, end, search_option, keyword);
 		
 		model.addAttribute("list", list);
-
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("search_option", search_option);
+		model.addAttribute("page", page);
+		model.addAttribute("count", count);
 		return list;
 	}
 
 	@RequestMapping(value = "researchList.do", method = RequestMethod.POST)
-	public ModelAndView researchList(@ModelAttribute SchoolVO vo, Model model, RSIVO rsivo, HttpSession session) {
+	public ModelAndView researchList(@ModelAttribute SchoolVO vo, Model model, RSIVO rsivo, HttpSession session
+			,@RequestParam(defaultValue = "all")String search_option
+			,@RequestParam(defaultValue = "1")int curPage
+			,@RequestParam(defaultValue = "")String keyword
+			) {
+		
+		int count = schoolService.countArticle(search_option, keyword);
+		PageVO page = new PageVO(count, curPage);
+		int start = page.getPageBegin();
+		int end = page.getPageEnd();
+		
 		ModelAndView mav = new ModelAndView();
 		boolean result = schoolService.loginCheck(vo, session);
 
@@ -87,9 +104,8 @@ public class SchoolController extends HttpServlet {
 			mav.setViewName("researchList");
 		}
 
-		List<RSIVO> list = schoolService.researchList(rsivo);
+		List<RSIVO> list = schoolService.researchList(start, end, search_option, keyword);
 		model.addAttribute("list", list);
-
 		return mav;
 	}
 
@@ -152,18 +168,14 @@ public class SchoolController extends HttpServlet {
 			rsivo.setSuriTitle5(suriTitle5.toString());
 			rsivo.setSuriTitle6(suriTitle6.toString());
 			rsivo.setSuriTitle7(suriTitle6.toString());
-			
 			schoolService.create(rsivo);
             return "redirect:researchList";
 	}
-	
-
 
 	@RequestMapping(value="researchDetail.do", method = RequestMethod.GET)
-	public ModelAndView detail(String suriSeq, RSRVO rsrvo, Model model, SchoolVO vo, HttpSession session) {
-
+	public ModelAndView detail(String suriSeq, Model model, SchoolVO vo, HttpSession session ) {
 		RSIVO rsivo= schoolService.researchDetail(suriSeq);
-//
+		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("vo", rsivo);
 		
@@ -174,16 +186,15 @@ public class SchoolController extends HttpServlet {
 		ArrayList<String> list05 = new ArrayList<String>();
 		ArrayList<String> list06 = new ArrayList<String>();
 		ArrayList<String> list07 = new ArrayList<String>();
-//		
+		
 		String[] col01 = rsivo.getSuriTitle1().substring(1, rsivo.getSuriTitle1().length()-1).split(",");
 		String[] col02 = rsivo.getSuriTitle2().substring(1, rsivo.getSuriTitle2().length()-1).split(",");
 		String[] col03 = rsivo.getSuriTitle3().substring(1, rsivo.getSuriTitle3().length()-1).split(",");
 		String[] col04 = rsivo.getSuriTitle4().substring(1, rsivo.getSuriTitle4().length()-1).split(",");
 		String[] col05 = rsivo.getSuriTitle5().substring(1, rsivo.getSuriTitle5().length()-1).split(",");
 		String[] col06 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
-		String[] col07 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");;
+		String[] col07 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
 		
-		System.out.println(col01.length);
 		for(int i=0; i< col01.length; i++) {
 			list01.add(col01[i]);
 			list02.add(col02[i]);
@@ -193,14 +204,13 @@ public class SchoolController extends HttpServlet {
 			list06.add(col06[i]);
 			list07.add(col07[i]);
 		}
-//		
+		
 		model.addAttribute("list01", list01);
 		model.addAttribute("list02", list02);
 		model.addAttribute("list03", list03);
 		model.addAttribute("list04", list04);
 		model.addAttribute("list05", list05);
 		model.addAttribute("list06", list06);
-		
 		return mav ;
 	}
 	
@@ -259,7 +269,6 @@ public class SchoolController extends HttpServlet {
 		ArrayList<String> list05 = new ArrayList<String>();
 		ArrayList<String> list06 = new ArrayList<String>();
 		ArrayList<String> list07 = new ArrayList<String>();
-
 		
 		String[] col01 = rsivo.getSuriTitle1().substring(1, rsivo.getSuriTitle1().length()-1).split(",");
 		String[] col02 = rsivo.getSuriTitle2().substring(1, rsivo.getSuriTitle2().length()-1).split(",");
@@ -268,7 +277,6 @@ public class SchoolController extends HttpServlet {
 		String[] col05 = rsivo.getSuriTitle5().substring(1, rsivo.getSuriTitle5().length()-1).split(",");
 		String[] col06 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
 		String[] col07 = rsivo.getSuriTitle6().substring(1, rsivo.getSuriTitle6().length()-1).split(",");
-	
 		
 		for(int i=0; i< col01.length; i++) {
 			list01.add(col01[i]);
@@ -278,7 +286,6 @@ public class SchoolController extends HttpServlet {
 			list05.add(col05[i]);
 			list06.add(col06[i]);
 			list07.add(col07[i]);
-
 		}
 		
 		model.addAttribute("list01", list01);
@@ -405,9 +412,8 @@ public class SchoolController extends HttpServlet {
 	@RequestMapping(value="researchPopup.do", method = RequestMethod.GET)
 	public JSONObject resultPopup(String suriSeq, Model model) {
 		
-		List list = schoolService.result(suriSeq);
-		System.out.println(list);
-		List<Map<Object, Object>> map = list;
+		List<Object> list = schoolService.result(suriSeq);
+		
 		JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject univ = new JSONObject();
@@ -416,122 +422,70 @@ public class SchoolController extends HttpServlet {
 		String surTitle = "";
 		String surqTitle = "";
 		String queCnt = ""; 
-		Date regDate = null;
+		String regName = null;
 	
 		for(int i=0; i<list.size(); i++) {
-			Map item = (Map) list.get(i);
+			@SuppressWarnings("unchecked")
+			Map<String, Object> item = (Map<String, Object>) list.get(i);
 			suriNum = (String) item.get("SURINUM");
 			surTitle = (String) item.get("SURTITLE");
 			surqTitle = (String) item.get("SURQTITLE");
 			queCnt = (String) item.get("QUECNT");
-			regDate = (Date) item.get("REGDATE");
+			regName = (String) item.get("REGNAME");
 			
-			SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-			String to = fm.format(regDate);
+//			SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+//			String to = fm.format(regName);
 			
-			List<String> sList = new ArrayList<String>();
-			
+//			List<String> sList = new ArrayList<String>();
 //			String ttr = map.get(i).get("SURINUM").toString().trim().replace(",", "");
-			String[] str = suriNum.split(",");
-			Collections.addAll(sList, str);
-			
-			String[] sv = sList.toArray(new String[sList.size()]);
-			
-			List svList = Arrays.asList(sv);
-			
-			
-//			object.put("num01", svList.get(0));
-//			object.put("num02", svList.get(1));
-//			object.put("num03", svList.get(2));
-//			object.put("num04", svList.get(3));
-//			object.put("num05", svList.get(4));
-//			ArrayList<String> n00 = new ArrayList<String>();
-				
+//			String[] str = suriNum.split(",");
+//			Collections.addAll(sList, str);
+//			String[] sv = sList.toArray(new String[sList.size()]);
+//			List<Integer> number = new ArrayList<Integer>();
 		
-			
-		    ArrayList<Integer> col = new ArrayList<Integer>();
-		    double aa = Double.parseDouble(suriNum.replace(",",""));
-		    int num = (int) Math.round(aa);				
-		
+		    object.put("num00", suriNum.charAt(0));
+		    object.put("num01", suriNum.charAt(2));
+		    object.put("num02", suriNum.charAt(4));
+		    object.put("num03", suriNum.charAt(6));
+		    object.put("num04", suriNum.charAt(8));
 		    
-			 int[] arr = new int[10];
- 			 	while(num>0) {
-				 arr[num%10]+=1;
-				 num/=10;
-			 }
-			 
- 			 
- 			 int nn = 0; 
-			 for(int j=0; j<10; j++) {
-				 
-				 col.add(arr[j]);
-			 }
-			 
-			 
-
-			
-			
-			
-			object.put("nList",svList);
-			object.put("date", to);
-			object.put("surqTitle", surqTitle);
-			
-			array.add(object);
-			univ.put("list", array);
+//		    double aa = Double.parseDouble(suriNum.replace(",",""));
+//		    int num = (int) Math.round(aa);				
+				
+				object.put("name", regName);
+				object.put("surqTitle", surqTitle);
+				array.add(object);
+				univ.put("list", array);
 		    }
 		
 		    model.addAttribute("surTitle",  surTitle);
 		    model.addAttribute("queCnt",  queCnt);
-		
-		 
-	
-
-//		 Integer[] str = col.toArray(new Integer[0]);
-		 
-//		 Integer[] are = new Integer[100];
-		 
-//		 int n1 = 0; //1번
-//		 int n2 = 0; //2번
-//		 int n3 = 0; //3번
-//		 int n4 = 0; //4번
-//		 int n5 = 0; //5번 
-		 
-//			 System.out.println(Arrays.toString(str));
-//		 int nn = 1;
-//		 int[][] con = new int[10][10];
-		 
-//		 for(int i=0; i<1; i++) {
-//			 
-//				n1 = str[1] + str[11] + str[21]; 
-//				n2 = str[2] + str[12] + str[22];
-//				n3 = str[3] + str[13] + str[23];
-//				n4 = str[4] + str[14] + str[24];
-//				n5 = str[5] + str[15] + str[25];
-			
-			
-//			 for(int j=0; j<con.length; j++) {
-//				 for(int h=0; h<con[j].length; h++) {
-//						 con[h][j] = nn;
-//						 nn++;
-//				 }
-//			 }
-//		 }
-//		 List<Integer> value = new ArrayList<Integer>();
-//		 
-//		 value.add(n1);
-//		 value.add(n2);
-//		 value.add(n3);
-//		 value.add(n4);
-//		 value.add(n5);
-//		 
-//		 map.put("category", list.get(0));
-//		 map.put("value", value);
-		 
-//		 for(int j=0; j<con.length; j++) {
-//			 for(int h=0; h<con[j].length; h++) {
-//			 }
-//		 }
-		 
+		    
 		return univ;
+	}
+	
+	@RequestMapping(value="description.do", method = RequestMethod.GET)
+	public String description(String suriSeq, Model model) {
+		
+		List<Object> list = schoolService.result(suriSeq);
+		
+		String surTitle = "";
+//		String description = "";
+		
+//		List<String> des = new ArrayList<String>();
+//		Map<String, Object> map = new HashMap<String, Object>();
+		for(int i=0; i<list.size(); i++) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> item = (Map<String, Object>) list.get(i);
+			surTitle = (String) item.get("SURTITLE");
+//			description = (String) item.get("DESCRIPTION");
+			
+//			String[] str = description.split(",");
+			
+		}
+		model.addAttribute("list", list);
+		model.addAttribute("surTitle", surTitle);
+		
+		return "description";
 	}
 }

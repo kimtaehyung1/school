@@ -8,6 +8,15 @@ public class RSIVO {
 	private String queCnt;
 	private String surSatDate;
 	private String surEndDate;
+	
+	private String keyword;
+	private String search_option;
+	private int rnum;
+	private int rank;
+	private int ref;
+	private int step;
+	private int depth;
+	
 
 	private String suriTitle1;
 	private String suriTitle2;
@@ -31,6 +40,62 @@ public class RSIVO {
 	private String surIsend;
 	
 	private RSRVO rsrvo;
+	
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public String getSearch_option() {
+		return search_option;
+	}
+
+	public void setSearch_option(String search_option) {
+		this.search_option = search_option;
+	}
+
+	public int getRnum() {
+		return rnum;
+	}
+
+	public void setRnum(int rnum) {
+		this.rnum = rnum;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
+	public int getRef() {
+		return ref;
+	}
+
+	public void setRef(int ref) {
+		this.ref = ref;
+	}
+
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
 
 	public String getSuriSeq() {
 		return suriSeq;

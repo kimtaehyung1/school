@@ -19,13 +19,48 @@
 		FROM TB_00_MEMBER
 		WHERE USER_ID = #{userId} AND ADMIN_PW = #{adminPw}
 	</select>
+	<!-- 전체게시글 수  -->
+	<select id="countArticle" resultType="int">
+		select count(*) from tb_06_rsi
+		<include refid="search"></include>
+	</select>
 	<!-- 설문 리스트 -->
 	<select id="researchList" resultType="com.school.web.vo.RSIVO">
-  <![CDATA[
-      SELECT SURI_SEQ AS SURISEQ, SUR_TITLE AS SURTITLE, SUR_SAT_DATE AS SURSATDATE, SUR_END_DATE AS SURENDDATE, CASE WHEN SUR_END_DATE < TO_CHAR(SYSDATE, 'YYYYMMDD') THEN '완료'
-       ELSE '진행중' END AS SURISEND FROM TB_06_RSI ORDER BY SURI_SEQ DESC
-  ]]>
+ 
+  		<include refid="pagingheader"></include>
+			select DENSE_RANK() over(order by ref)rank, a.* from(
+			select b.* from tb_06_rsi b 
+		<include refid="search"></include>
+			)a order by suri_seq desc, step
+		<include refid="pagingfooter"></include>
 	</select>
+	<!-- 페이징 윗부분-->
+	<sql id="pagingheader">
+	<![CDATA[
+		select
+		rnum,
+		SURI_SEQ AS suriSeq, 
+		SUR_TITLE AS surTitle, 
+		SUR_SAT_DATE AS surSatDate, 
+		SUR_END_DATE AS surEndDate, 
+		CASE WHEN SUR_END_DATE < TO_CHAR(SYSDATE, 'YYYYMMDD') THEN '완료' ELSE '진행중' END AS surisend  from (
+		select rownum rnum, r.* from (
+	]]>
+	</sql>
+	<!-- 페이징 아랫부분 -->
+	<sql id="pagingfooter">
+		)r)where rnum between #{start} and #{end}
+	</sql>
+	<sql id="search">
+		<choose>
+			<when test="search_option == 'all'">
+				where sur_title like '%'||#{keyword}||'%'
+			</when>
+			<otherwise>
+				where ${search_option} like '%'||#{keyword}||'%'
+			</otherwise>
+		</choose>
+	</sql>
 	<!-- 글쓰기 저장  -->
 	<insert id="researchRSI">
 		insert into TB_06_RSI 
@@ -122,6 +157,7 @@
     	<result column="SURI_SEQ" property="suriSeq"/>
     	<result column="SUR_TITLE" property="surTitle"/>
     	<result column="QUE_CNT" property="queCnt"/>
+    	<result column="SURISEND" property="surIsend"/>
     	<result column="SUR_SAT_DATE" property="surSatDate"/>
     	<result column="SUR_END_DATE" property="surEndDate"/>
     	<result column="SURI_TITLE1" property="suriTitle1"/>
@@ -154,12 +190,14 @@
     	</association>
     </resultMap>
     <select id="researchDetail" resultMap="rsiMap" >
+    <![CDATA[
  			select 
 	    	A.SURI_SEQ,
 			A.SUR_TITLE,
 			A.SUR_SAT_DATE,
 			A.SUR_END_DATE,
 			A.QUE_CNT,
+			CASE WHEN A.SUR_END_DATE < TO_CHAR(SYSDATE, 'YYYYMMDD') THEN '완료' ELSE '진행중' END AS surIsend, 
 			A.SURI_TITLE1,
 			A.SURI_TITLE2,
 			A.SURI_TITLE3,
@@ -178,6 +216,7 @@
 			A.UDT_NAME
 		FROM TB_06_RSI A 
 		WHERE A.SURI_SEQ = #{suriSeq}
+		]]>
     </select>
     <select id="result" resultType="map"> 
     	SELECT  

@@ -189,7 +189,7 @@
 	            <tbody>
 	              <tr>
 	                <th>제목</th>
-	                <td colspan="5" class="tl"><input type="text" id="surTitle" maxlength="20" name="surTitle" value="${vo.surTitle }" style="width: 200px"/></td>
+	                <td colspan="5" class="tl"><input type="text" id="surTitle" maxlength="20" name="surTitle" value="${vo.surTitle }" style="width: 600px" maxlength="81" onkeyup="edit()"/></td>
 	                </tr>
 	              <tr>
 	                <th>시작일</th>
@@ -214,7 +214,7 @@
 	               <tr>
 	                	<th style="font-size: 5px; color:red;">주의사항</th>
 	                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
-	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * ( ) + _ ]를 입력할 수 없습니다.</br>
+	                		※ 문제와 문항에는 특수문자 [ # , $ & * ( ) < > ]를 입력할 수 없습니다.</br>
 	                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
 	                	
 	                	</td>
@@ -223,14 +223,14 @@
 	               	    <div class="research" >
 	             	   <c:forEach var="vo" items="${list01 }" varStatus="status">
 							<p>${status.count }. 
-							<input type="text" value="${vo }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)" /></p>
+							<input type="text" value="${vo }" class="inp" onkeyup="checkSpecial(this)" /></p>
 						 <ul class="test-li">
-								<li><input type="text" value="${list02[status.index] }" class="inp" onkeyup="checkSpecial(this.value)" maxlength="50"/></li> 
-								<li><input type="text" value="${list03[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
-								<li><input type="text" value="${list04[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
-								<li><input type="text" value="${list05[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
-								<li><input type="text" value="${list06[status.index] }" class="inp" maxlength="50" onkeyup="checkSpecial(this.value)"/></li> 
-								<li><input type="hidden" value="${list07[status.index] }" class="inp" maxlength="40" style="width: 600px;" onkeyup="checkSpecial(this.value)"/>
+								<li><input type="text" value="${list02[status.index] }" class="inp" onkeyup="checkSpecial(this)" /></li> 
+								<li><input type="text" value="${list03[status.index] }" class="inp" onkeyup="checkSpecial(this)"/></li> 
+								<li><input type="text" value="${list04[status.index] }" class="inp" onkeyup="checkSpecial(this)"/></li> 
+								<li><input type="text" value="${list05[status.index] }" class="inp" onkeyup="checkSpecial(this)"/></li> 
+								<li><input type="text" value="${list06[status.index] }" class="inp" onkeyup="checkSpecial(this)"/></li> 
+								<li><input type="hidden" value="${list07[status.index] }" class="inp" style="width: 600px;" onkeyup="checkSpecial(this)"/>
 								</li>
 								<br />
 							</ul>
@@ -293,13 +293,32 @@
 
 <script type="text/javascript">
 
-	function checkSpecial(str) { 
+	function edit(){
+		var surTitle = $('#surTitle').val();
 		
-		var re = /[\#,$%^&*()+_]/gi;
-		
-		if(re.test(str)) {
-			alert("특수문자"+"["+ " "+str+" "+"]" + "를 사용할수 없습니다.\n삭제후 다시 작성해주세요");
+		if(surTitle.length > 80 ){
+			alert("제목은 전체 80글자 이하만 입력해주세요(공백포함)");
 			return false;
+		}
+	}
+
+	function checkSpecial(str, maxlength) { 
+		var val = str.value;
+		var re = /[#,$&*()<>]/gi;
+		var max = maxlength;
+		var str2 = "";
+	
+		
+		if(val.length > max){
+			alert("문제와 문항은 100글자 이하만 입력해주세요(공백포함)");
+			
+			str2 = val.substr(0, max);
+			str.value = str2;
+		}
+		
+		if(re.test(val)) {
+			alert("특수문자"+"["+ " "+val+" "+"]" + "를 사용할수 없습니다.");
+			str.value = val.replace(',', '').replace('<', '').replace('>', '').replace('&', '').replace('*', '').replace('(', '').replace(')', '').replace('#', '').replace('$', '');
 		}
 	}
 
@@ -395,13 +414,13 @@
 			$(".research").empty(); 
 				for(var i =1; i<=selectCnt ;i++){
 						var div = $("<div/>");
-						var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='suriTitle1'  class='inp' maxlength='50'></input></p>");
-						var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-						var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-						var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-						var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-						var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' maxlength='50'/></li>");
-						var q6 = $("<li><input type='hidden' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></li></ul><br>");
+						var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='suriTitle1'  class='inp'></input></p>");
+						var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle'  class='inp'/></li>");
+						var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle'  class='inp' /></li>");
+						var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle'  class='inp' /></li>");
+						var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle'  class='inp' /></li>");
+						var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle'  class='inp' /></li>");
+						var q6 = $("<li><input type='hidden' name='suriTitle' class='inp' style='width:400px;' /></li></ul><br>");
 						$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 						$(".research").append(div);
 				}

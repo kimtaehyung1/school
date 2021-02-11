@@ -10,9 +10,7 @@
 <link rel="stylesheet" href="resources/css/base.css">
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 </head>
 <body>
@@ -22,8 +20,7 @@
 	  	<h1>결과보기</h1>
 	    <div class="pop_list">
 	    	<h2>${surTitle }</h2>
-	    
-	   	 <div id="chartdiv"></div>
+	   	 <div id="chartdiv" style="width: 700px; height: 500px"></div>
 	    </div>
 		<p class="pt20"></p>
 	    <div class="pop_btn">
@@ -45,85 +42,44 @@
 	var cnt = '${queCnt}';
 	var list = JSON.parse(list); 
 
-   		 	var num100 = list[0].nList[0];
-  		    var num101 = list[0].nList[1];
-			var num102 = list[0].nList[2];
-			var num103 = list[0].nList[3];
-			var num104 = list[0].nList[4]; 
-			        
-			var num200 = list[1].nList[0];
-	 		var num201 = list[1].nList[1];
-			var num202 = list[1].nList[2];
-			var num203 = list[1].nList[3];
-			var num204 = list[1].nList[4];
-			      
-			var num300 = list[2].nList[0];
-		 	var num301 = list[2].nList[1];
-			var num302 = list[2].nList[2];	
-			var num303 = list[2].nList[3];	
-			var num304 = list[2].nList[4];	   
-
-	am4core.useTheme(am4themes_animated);
-	// Create chart instance
-	var chart = am4core.create("chartdiv", am4charts.XYChart);
-
-	// Add data
-
-	for(var i in list){
-		var arr = list[i].surqTitle.split(",");
-		
-	}
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(drawVisualization);
 	
-	for(var i=0; i<list.length; i++){
+	function drawVisualization(){
 	
-		 chart.data = [
-			{ "category": arr[0], "value0": num100, "value1": num200, "value2": num300 }, 
-		 	{ "category": arr[1], "value0": num101, "value1": num201, "value2": num301 },
-	 		{ "category": arr[2], "value0": num102, "value1": num202, "value2": num302 },
-	 		{ "category": arr[3], "value0": num103, "value1": num203, "value2": num303 },
-	 		{ "category": arr[4], "value0": num104, "value1": num204, "value2": num304 }
-
+ 		var data = new google.visualization.DataTable();
+ 		
+ 		data.addColumn('string');
+ 		data.addColumn('number', 1);
+ 		data.addColumn('number', 2);
+ 		data.addColumn('number', 3);
+ 		data.addColumn('number', 4);
+ 		data.addColumn('number', 5);
+ 		
+ 	 	for(var i=0; i<list.length; i++){
+ 	 		
+ 	 		var name = list[i].name;
+	 		var n1 = list[i].num00;
+	 		var n2 = list[i].num01;
+	 		var n3 = list[i].num02;
+	 		var n4 = list[i].num03;
+	 		var n5 = list[i].num04;
 	 		
-	 	];  
-	}			
-	
-	// Create axes
- /* 	var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-	dateAxis.renderer.minGridDistance = 20;
-	dateAxis.renderer.grid.template.location = 0.5; */
-	
-	var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-	categoryAxis.dataFields.category = "category";
-	categoryAxis.renderer.grid.template.location = 0;
-	categoryAxis.renderer.minGridDistance = 20;
-
-
-	var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-	valueAxis.gridAlpha = 0; 
-	// Create series
-	function createSeries(field, name) {
-	  var series = chart.series.push(new am4charts.LineSeries());
-	  series.dataFields.valueY = field;
-	  series.dataFields.categoryX = "category";
-	  series.name = name;
-	  series.tooltipText = "{valueY}[/]";
-	  series.strokeWidth = 2;
-	  
-/* 	  series.smoothing = "monotoneX"; */
-	  
-	  var bullet = series.bullets.push(new am4charts.CircleBullet());
-	  bullet.circle.stroke = am4core.color("#fff");
-	  bullet.circle.strokeWidth = 2;
-	}
+			data.addRows([
+	 			[name, parseInt(n1), parseInt(n2), parseInt(n3), parseInt(n4), parseInt(n5)]
+	 		]);
+	 	}
 	 
- 	/* createSeries("value",  "0#0");   
-	createSeries("value2",  "0#0");    
-	createSeries("value",  "0#0");  */ 
+			var options = {
+					vAxis: {title: '번호'},
+					hAxis: {title: '사람'},
+					seriesType: 'bars',
+					series:{5: {type: 'line'}}
+			};
+			
+			var chart = new google.visualization.ComboChart(document.getElementById('chartdiv'));
+			chart.draw(data, options);
+	}
 	
- 	 for(var i=0; i<list.length; i++){ //다시 정비 
- 		createSeries("value"+i,  list[i].date+"#"); 
- 	} 
-	chart.legend = new am4charts.Legend();
-	chart.cursor = new am4charts.XYCursor();
 </script>
 </html>

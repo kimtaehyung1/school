@@ -310,7 +310,7 @@
 									      <tr>
 							                	<th style="font-size: 5px; color:red;">주의사항</th>
 							                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
-							                		※ [선택사유] 에는 특수문자 [ \ # , $ % ^ & * \ ( ) \ + _ ]를 입력할 수 없습니다.</br>
+							                		※ [선택사유] 에는 특수문자 [ # , $ & * ( ) < > ]를 입력할 수 없습니다.</br>
 							                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
 							                	</td>
 							                </tr>
@@ -326,7 +326,7 @@
 															<li><input type="checkbox" value="3" name="chk" id="chk" class="chk"/> ${list04[status.index] }</li>
 															<li><input type="checkbox" value="4" name="chk" id="chk" class="chk"/> ${list05[status.index] }</li>
 															<li><input type="checkbox" value="5" name="chk" id="chk" class="chk"/> ${list06[status.index] }</li>
-															<li>선택사유&nbsp;&nbsp;&nbsp; <input maxlength="50" type="text" value="${list07[status.index] }" onkeyup="checkSpecial(this.value)" id="list07" class="inp" style="width: 600px;" /></li>
+															<li>선택사유&nbsp;&nbsp;&nbsp; <input maxlength="50" type="text" value="${list07[status.index] }" onkeyup="checkSpecial(this)" id="list07" class="inp" style="width: 600px;" /></li>
 														<br />
 													</ul>
 												</c:forEach>
@@ -350,13 +350,21 @@
 									<span class="wte_l"><a href="javascript:update(${vo.suriSeq })" class="wte_r">수정</a></span>
 									<span class="wte_l"><a href="javascript:chk()" class="wte_r">삭제</a></span>
 								</c:if> 
-							<!-- 	<span class="wte_l"><a href="#" class="wte_r">결과보기</a></span>  -->
-								<span class="wte_l"><a href="#" class="wte_r" id="save">저장</a></span>
-								<!-- <span class="wte_l"><a href="#" class="wte_r">사유전체보기</a></span> -->
-								<span class="wte_l"><a href="javascript:back();" class="wte_r">취소</a></span>
-							</span>
-							 
-						</div>
+								
+							<c:if test="${vo.surIsend == '진행중' }">
+								<span class="wte_l"><a href="#" class="wte_r" id="save">저장</a></span>	             		 		
+							</c:if>
+							<c:if test="${vo.surIsend == '완료' }">
+								<span class="wte_l"><a href="#" class="wte_r" id="end">저장</a></span>	             		 		
+							</c:if>
+			
+					
+				
+		
+							<span class="wte_l"><a href="javascript:description(${vo.suriSeq })" class="wte_r">사유전체보기</a></span>
+							<span class="wte_l"><a href="javascript:back();" class="wte_r">취소</a></span>
+						</span>
+					</div>
 				</div>
 
 				<p class="bottom_bg"></p>
@@ -390,6 +398,36 @@
 
 <script type="text/javascript">
 
+		var sss = '${vo.surIsend}'
+	function description(seq) {
+		
+		var suriSeq = '${vo.suriSeq}';
+	
+		$.ajax({
+			url:"description.do?suriSeq="+seq,
+			method:"get",
+			dataType:"html",
+			success: eventSuccess,
+			error: function(xhr, status, error) {
+				alert("aa");
+			}
+		});
+	
+		function eventSuccess(data) {
+			window.open("description.do?suriSeq="+seq,"researchPopup","width=600,height=400");
+		}
+	}
+
+	function checkSpecial(str) { 
+		var val = str.value;
+		var re = /[ # , $ & * ( ) < > ]/gi;
+		
+		if(re.test(val)) {
+			alert("특수문자"+"["+ " "+val+" "+"]" + "를 사용할수 없습니다.");
+			str.value = val.replace(',', '').replace('<', '').replace('>', '').replace('&', '').replace('*', '').replace('(', '').replace(')', '').replace('#', '').replace('$', '');
+		}
+	}
+
 	function result(seq) {
 		var suriSeq = '${vo.suriSeq}';
 
@@ -404,7 +442,7 @@
 		});
 
 		function eventSuccess(data) {
-			window.open("researchPopup.do?suriSeq="+seq,"researchPopup","width=900,height=550");
+			window.open("researchPopup.do?suriSeq="+seq,"researchPopup","width=800,height=630");
 		}
 	}
 	
@@ -420,6 +458,12 @@
 	function back() {
 		window.history.back();
 	}
+	
+	$(document).ready(function(){
+		$('#end').click(function(){
+			alert("완료된 설문조사입니다.");
+		})
+	})
 
 	$(document).ready(function(){
 		$("#save").click(function(){

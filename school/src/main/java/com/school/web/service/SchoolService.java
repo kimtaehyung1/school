@@ -40,8 +40,12 @@ public class SchoolService {
 		session.invalidate();
 	}
 	
-	public List<RSIVO> researchList(RSIVO vo) {
-		return schoolDao.researchList(vo);
+	public int countArticle(String search_option, String keyword) {
+		return schoolDao.countArticle(search_option, keyword);
+	}
+	
+	public List<RSIVO> researchList(int start, int end, String search_option, String keyword) {
+		return schoolDao.researchList(start, end, search_option, keyword);
 	}
 	
 	public int create(RSIVO rsivo) {
@@ -50,7 +54,6 @@ public class SchoolService {
 	
 	public RSIVO researchDetail(String suriSeq) {
 		 return schoolDao.researchDetail(suriSeq);
-	
 	}
 
 	public int update(RSIVO rsivo) {
@@ -69,7 +72,10 @@ public class SchoolService {
 		return schoolDao.insert(rsrvo);
 	}
 	
-	public List result(String suriSeq) {
+	public List<Object> result(String suriSeq) {
+		return schoolDao.result(suriSeq);
+	}
+	public List<Object> description(String suriSeq){
 		return schoolDao.result(suriSeq);
 	}
 }

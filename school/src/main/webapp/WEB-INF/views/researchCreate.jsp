@@ -13,15 +13,27 @@
 <script type="text/javascript">
 	// 특수문자 정규식 변수(공백 미포함)
 	
-	function checkSpecial(str) { 
+	function checkSpecial(str, maxlength) { 
+		var val = str.value;
+		var max = maxlength;
+		var re = /[#,$&*()<>]/gi;
+		var str2 = "";
+	
 		
-		var re = /[\#,$%^&*()+_]/gi;
+		if(val.length > max){
+			alert("문제와 문항은 100글자 이하만 입력해주세요(공백포함)");
+			
+			str2 = val.substr(0, max);
+			str.value = str2;
+		}
 		
-		if(re.test(str)) {
-			alert("특수문자"+"["+ " "+str+" "+"]" + "를 사용할수 없습니다.\n삭제후 다시 작성해주세요");
-			return false;
+		if(re.test(val)) {
+			alert("특수문자"+"["+ " "+val+" "+"]" + "를 사용할수 없습니다.");
+			str.value = val.replace(',', '').replace('<', '').replace('>', '').replace('&', '').replace('*', '').replace('(', '').replace(')', '').replace('#', '').replace('$', '');
 		}
 	}
+	
+
 </script>
 </head>
 <body>
@@ -205,13 +217,13 @@
 	            <tbody>
 	              <tr>
 	                <th>제목</th>
-	                <td colspan="5" class="tl"><input type="text" id="surTitle" name="surTitle" style="width: 200px" maxlength="20"/></td>
+	                <td colspan="5" class="tl"><input type="text" id="surTitle" name="surTitle" style="width: 600px" maxlength="101" onkeyup="edit(this)"/></td>
 	                </tr>
 	              <tr>
 	                <th>시작일</th>
-	                <td class="tl"><input type="text" id="surSatDate" name="surSatDate"  style="width:100px;" maxlength="8"/></td>
+	                <td class="tl"><input type="text" id="surSatDate" name="surSatDate" style="width:100px;" /></td>
 	                <th>종료일</th>
-	                <td class="tl"><input type="text" id="surEndDate" name="surEndDate"  style="width:100px;" maxlength="8"/></td>
+	                <td class="tl"><input type="text" id="surEndDate" name="surEndDate" style="width:100px;" /></td>
 	            <!--     <th>결과확인</th>
 	                <td class="tl"><img src="resources/images/sub/btn/btn_view.gif" alt="결과보기" /></td> -->
 	              </tr>
@@ -231,8 +243,8 @@
 	                <tr>
 	                	<th style="font-size: 5px; color:red;">주의사항</th>
 	                	<td  colspan="4"  style="font-size: 5px; color:red; width: 300px; text-align: left">
-	                		※ 문제와 문항에는 특수문자 [ \ # , $ % ^ & * ( ) + _ ] 를 입력할 수 없습니다.</br>
-	                		※ 각 항목당 글자수 '50글자(숫자포함)' 로 제한 합니다.
+	                		※ 문제와 문항에는 특수문자 [ # , $ & * ( ) < > ] 를 입력할 수 없습니다.</br>
+	                		※ 각 항목당 글자수 '100글자(숫자포함)' 로 제한 합니다.
 	                	</td>
 	                </tr>
 	              <tr>
@@ -297,11 +309,25 @@
 
 <script type="text/javascript">
 
-
-	
-	
 	function back() {
 		window.history.back();
+	}
+
+	function edit(str){
+		var val = str.value;
+		var surTitle = $('#surTitle').val();
+		var re = /[#,$&*()<>]/gi;
+		
+		if(surTitle.length > 80 ){
+			alert("제목은 전체 80글자 이하만 입력해주세요(공백포함)");
+			return false;
+		}
+		
+		if(re.test(val)) {
+			alert("특수문자"+"["+ " "+val+" "+"]" + "를 사용할수 없습니다.");
+			str.value = val.replace(',', '').replace('<', '').replace('>', '').replace('&', '').replace('*', '').replace('(', '').replace(')', '').replace('#', '').replace('$', '');
+		}
+		
 	}
 
  	$(document).ready(function(){
@@ -314,26 +340,54 @@
 			var writer = $('#writer').val();
 			var regName = $('#regName').val();
 			var udtName = $('#udtName').val();
-			//문제 문항들 
+			
+			var startArray = surSatDate.split('-');
+	        var endArray = surEndDate.split('-');  
+			
+			var startDate = new Date(startArray[0], startArray[1], startArray[2]);
+			var endDate = new Date(endArray[0], endArray[1], endArray[2]);
+			
+			
+			if(startDate.getTime() > endDate.getTime()){
+				alert("종료날짜보다 시작날짜가 작아야합니다.");
+				$("#surEndDate").focus();
+				return false;
+			} 
+			
+			var sdate = new Date(surSatDate);
+		    var edate = new Date(surEndDate);
+		 	var year = sdate.getFullYear().toString(); //yyyy
+		 	var year = edate.getFullYear().toString(); //yyyy
+		    var month = (1 + sdate.getMonth());          //M
+		    var month = (1 + edate.getMonth());          //M
+		    month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+		    var day = sdate.getDate();                   //d
+		    var day = edate.getDate();                   //d
+		    day = day >= 10 ? day : '0' + day;
+		    var endDate = year + month + day;//day 두자리로 저장
+		    var satDate = year + month + day;//day 두자리로 저장 		    
+		    
+				//문제 문항들 
 			var suriArray = [];
 			
 			$('input[class="inp"]').each(function(i){
 				suriArray.push($(this).val());
 			});
 			
-	/*  	if(surTitle == "")  {
+/* 	 	  	if(surTitle == "")  {
 				alert("제목을 입력하세요.");
 				$("#surTitle").focus();
 				return false;
-			}
-			if(surSatDate == "") {
+			} */
+	 	  	
+/* 			if(surSatDate == "") {
 				alert("시작일을 설정하세요.");
 				return false;
 			}
 			if(surEndDate == "") {
 				alert("종료일을 설정하세요.");
 				return false;
-			} */
+			} 
 			if($("#title").val() == "") {
 				alert("하나이상의 문제을 입력하세요");
 				$("#title").focus();
@@ -343,13 +397,13 @@
 				alert("하나이상의 문항을 입력하세요");
 				$("#content").focus();
 				return false;
-			} 
+			}  */
 		
 			var param = {
 				    "surTitle": surTitle,
 					"queCnt": queCnt,
-					"surSatDate":surSatDate,
-					"surEndDate":surEndDate,
+					"surSatDate":satDate,
+					"surEndDate":endDate,
 					"writer": writer,
 					"regName": regName,
 					"udtName": udtName,
@@ -379,30 +433,28 @@
 		$(".research").empty();
 			for(var i =1; i<=selectCnt ;i++){
 					var div = $("<div/>");
-					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='title' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'></input></p>");
-					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)'  class='inp'maxlength='50'/></li>");
-					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-					/* var q6 = $("</ul><br>"); */
-					var q6 = $("<input type='hidden' name='suriTitle'  class='inp' style='width:400px;' maxlength='40'/></ul><br>");
+					var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='title' onkeyup='checkSpecial(this, 100)' class='inp'></input></p>");
+					var q1 = $("<ul><li>①&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)'  class='inp'maxlength='100'/></li>");
+					var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' maxlength='100'/></li>");
+					var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' maxlength='100'/></li>");
+					var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' maxlength='100'/></li>");
+					var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' maxlength='100'/></li>");
+					var q6 = $("<input type='hidden' name='suriTitle'  class='inp' style='width:400px;' onkeyup='checkSpecial(this, 100)'/></ul><br>");
 					$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 					$(".research").append(div);
 			}
-		} 
+		}
 		
 	$(function(){
 			for(var i =1; i<=5 ;i++){
 				var div = $("<div/>");
-				var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='title' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'></input></p>");
-				var q1 = $("<ul><li>①&nbsp;<input type='text' onkeyup='checkSpecial(this.value)' id='content' class='inp' maxlength='50'/></li>");
-				var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-				var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-				var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp'maxlength='50'/></li>");
-				var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this.value)' class='inp' maxlength='50'/></li>");
-			/* 	var q6 = $("</ul><br>"); */
-				var q6 = $("<br><input type='hidden' name='suriTitle' class='inp' style='width:400px;' maxlength='40'/></ul><br>");
+				var c_title = $("<p>"+i+".&nbsp;&nbsp;<input type='text' name='suriTitle' id='title' onkeyup='checkSpecial(this, 100)' class='inp' ></input></p>");
+				var q1 = $("<ul><li>①&nbsp;<input type='text' onkeyup='checkSpecial(this, 100)' id='content' class='inp' /></li>");
+				var q2 = $("<li>②&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' /></li>");
+				var q3 = $("<li>③&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' /></li>");
+				var q4 = $("<li>④&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' /></li>");
+				var q5 = $("<li>⑤&nbsp;<input type='text' name='suriTitle' onkeyup='checkSpecial(this, 100)' class='inp' /></li>");
+				var q6 = $("<br><input type='hidden' name='suriTitle' class='inp' style='width:400px;' onkeyup='checkSpecial(this, 100)'/></ul><br>");
 				$(div).append(c_title,q1,q2,q3,q4,q5,q6);
 				$(".research").append(div);
 			}
@@ -592,7 +644,9 @@
 			}
 		});
 	});
-	$(document).ready(function(){
+	
+	
+ 	$(document).ready(function(){
 		$("#surSatDate").datepicker({
 		     changeMonth: true, 
              changeYear: true,
@@ -602,7 +656,7 @@
              dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'], 
              monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
              monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-             dateFormat: "yymmdd",
+             dateFormat: "yy-mm-dd",
              
              showOn: "both",
              buttonImage: "resources/images/sub/btn/ico_data.gif",
@@ -611,12 +665,7 @@
 
 
 
-            /*  maxDate: 7,                       // 선택할수있는 최소날짜, ( 0 : 오늘 이후 날짜 선택 불가)
-             onClose: function( selectedDate ) {    
-                  //시작일(startDate) datepicker가 닫힐때
-                  //종료일(endDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
-                 $("#endDate").datepicker( "option", "maxDate", selectedDate );
-             }   */
+     
 		
 		});
 		$("#surEndDate").datepicker({
@@ -628,18 +677,13 @@
             dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'], 
             monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
             monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            dateFormat: "yymmdd",
+            dateFormat: "yy-mm-dd",
             
             showOn: "both",
             buttonImage: "resources/images/sub/btn/ico_data.gif",
             buttonImageOnly: true,
             buttonText: "Select date"
-           /*  minDate: 0,                       // 선택할수있는 최대날짜, ( 0 : 오늘 이후 날짜 선택 불가)
-            onClose: function( selectedDate ) {    
-                // 종료일(endDate) datepicker가 닫힐때
-                // 시작일(startDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 시작일로 지정
-                $("#startDate").datepicker( "option", "minDate", selectedDate );
-            }   */
+     
 		})
 	});
 
